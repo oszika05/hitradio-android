@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="channel_name">Hang</string>
+    <string name="channel_description">Ezzel az értesítéssel a lejátszást lehet irányítani</string>
+    <string name="download_notification_channel_name">Offline letöltések</string>
+    <string name="download_notification_channel_description">Értesítés az offline letöltésekről</string>
+</resources>
