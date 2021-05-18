@@ -8,8 +8,7 @@ import kotlin.concurrent.schedule
 
 class CurrentProgramRepository(programs: List<Program>) {
     private var isStarted = false
-
-    private val programs = programs.sortedBy { it.start }
+    private var programs = programs.sortedBy { it.start }
 
     private var timer: Timer? = null
 
@@ -20,6 +19,22 @@ class CurrentProgramRepository(programs: List<Program>) {
 
     private val _currentProgramLiveData = MutableLiveData<Program?>(null)
     val currentProgramLiveData: LiveData<Program?> = _currentProgramLiveData
+
+    private val _nextPrograms = MutableLiveData<List<Program>>(listOf())
+    val nextPrograms: LiveData<List<Program>> = _nextPrograms
+
+    fun setPrograms(programs: List<Program>) {
+        val wasStarted = isStarted
+        if (isStarted) {
+            end()
+        }
+
+        this.programs = programs
+
+        if (wasStarted) {
+            start()
+        }
+    }
 
     fun addObserver(observer: OnChangeListener) {
         observers.add(observer)
@@ -56,7 +71,14 @@ class CurrentProgramRepository(programs: List<Program>) {
         return null
     }
 
+    private fun getProgramsAfter(date: Date): List<Program> {
+        return programs.filter { it.start.after(date) }
+    }
+
     private fun updateCurrent() {
+        val now = Date()
+        _nextPrograms.postValue(getProgramsAfter(now))
+
         val current = getCurrent()
 
         currentProgram = current
@@ -87,20 +109,19 @@ class CurrentProgramRepository(programs: List<Program>) {
     }
 
     fun start() {
-        if (isStarted) {
-            return
-        }
         timer?.cancel()
         timer = Timer()
 
         updateCurrent()
         scheduleNext()
+
         isStarted = true
     }
 
     fun end() {
         timer?.cancel()
         timer = null
+
         isStarted = false
     }
 

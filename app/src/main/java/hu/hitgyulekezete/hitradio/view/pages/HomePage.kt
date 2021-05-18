@@ -78,8 +78,6 @@ fun HomePage(
                 } else {
                     audioController.playPause()
                 }
-
-
             },
             programRepository = programRepository,
         )

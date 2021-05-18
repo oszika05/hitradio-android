@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
 
         GlobalScope.launch {
             val programs = programApi.get()
-            currentProgramRepository = CurrentProgramRepository(programs)
+            currentProgramRepository.setPrograms(programs)
             currentProgramRepository.start()
         }
 
