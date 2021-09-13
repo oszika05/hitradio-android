@@ -36,7 +36,7 @@ class DownloadService : com.google.android.exoplayer2.offline.DownloadService(
 ) {
 
     override fun getDownloadManager(): DownloadManager {
-        return getDownloadManager(this)
+        return DownloadService.getDownloadManager(this)
     }
 
     override fun getScheduler(): Scheduler? {
