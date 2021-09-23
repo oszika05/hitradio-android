@@ -1,5 +1,6 @@
 package hu.hitgyulekezete.hitradio.view.podcast
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,7 +15,6 @@ import androidx.compose.material.Button
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import hu.hitgyulekezete.hitradio.view.PAGE_PODCAST_PROGRAM
 import hu.hitgyulekezete.hitradio.view.makePodcastProgramPageLink
@@ -32,6 +32,7 @@ fun PodcastProgramList(
             Box(
                 Modifier
                     .clickable {
+                        Log.d("LINK", makePodcastProgramPageLink(program.id))
                         navController.navigate(makePodcastProgramPageLink(program.id))
                     }
             ) {

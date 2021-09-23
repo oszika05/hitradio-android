@@ -1,31 +1,20 @@
-package hu.hitgyulekezete.hitradio
+package hu.hitgyulekezete.hitradio.view.nowplaying
 
-import android.util.Log
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.input.pointer.consumeAllChanges
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import hu.hitgyulekezete.hitradio.audio.AudioController
+import hu.hitgyulekezete.hitradio.audio.controller.AudioStateManager
 import hu.hitgyulekezete.hitradio.audio.metadata.Metadata
 import hu.hitgyulekezete.hitradio.audio.metadata.MetadataType
-import hu.hitgyulekezete.hitradio.view.nowplaying.NowPlayingBar
-import hu.hitgyulekezete.hitradio.view.nowplaying.NowPlayingBarExpanded
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -37,8 +26,8 @@ val barHeight = 64.dp
 fun NowPlayingBarLayout(
     modifier: Modifier = Modifier,
     metadata: Metadata,
-    playbackState: AudioController.PlaybackState,
-    seekPercentage: Float,
+    playbackState: AudioStateManager.PlaybackState,
+    seekPercentage: Float?,
     volumePercentage: Float,
     onSeekTo: (Float) -> Unit,
     onSetVolume: (Float) -> Unit,
@@ -99,7 +88,7 @@ fun NowPlayingBarLayout(
                         }
                     }
                 ) {
-                    NowPlayingBar(
+                    NowPlayingBarCollapsed(
                         height = barHeight,
                         playbackState = playbackState,
                         onPlayPausePressed = onPlayPausePressed,
@@ -138,7 +127,7 @@ fun NowPlayingBarLayout(
 @Preview
 @Composable
 fun PreviewNowPlayingBarLayout() {
-    var playbackState by remember { mutableStateOf(AudioController.PlaybackState.STOPPED) }
+    var playbackState by remember { mutableStateOf(AudioStateManager.PlaybackState.STOPPED) }
     var volumePercentage by remember { mutableStateOf(0.0f) }
     var seekPercentage by remember { mutableStateOf(0.0f) }
 

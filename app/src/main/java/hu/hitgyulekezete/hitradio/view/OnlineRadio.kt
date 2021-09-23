@@ -7,28 +7,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
-import hu.hitgyulekezete.hitradio.audio.AudioController
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import hu.hitgyulekezete.hitradio.model.program.CurrentProgramRepository
+import hu.hitgyulekezete.hitradio.audio.controller.AudioStateManager
+import hu.hitgyulekezete.hitradio.model.program.current.CurrentProgramRepository
 import hu.hitgyulekezete.hitradio.model.program.Program
-import java.lang.Exception
-import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 val formatter = SimpleDateFormat("HH:mm")
 
 @Composable
 fun OnlineRadio(
-    playbackState: AudioController.PlaybackState,
+    playbackState: AudioStateManager.PlaybackState,
     onPlayPause: () -> Unit,
     programRepository: CurrentProgramRepository,
 ) {
@@ -161,7 +157,7 @@ fun OnlineRadioPreview() {
 
     currentProgramRepository.start()
 
-    var playbackState by remember { mutableStateOf(AudioController.PlaybackState.STOPPED) }
+    var playbackState by remember { mutableStateOf(AudioStateManager.PlaybackState.STOPPED) }
 
 
 

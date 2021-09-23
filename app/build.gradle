@@ -7,14 +7,17 @@ ext {
     ktor_version = "1.5.3"
 }
 
+def paging_version = "3.0.1"
+def compose_version = "1.0.2"
+
 android {
-    compileSdk 30
+    compileSdk 31
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "hu.hitgyulekezete.hitradio"
         minSdk 21
-        targetSdk 30
+        targetSdk 31
         versionCode 1
         versionName "1.0"
 
@@ -41,47 +44,45 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion '1.0.0-beta01'
+        kotlinCompilerExtensionVersion '1.1.0-alpha04'
     }
 }
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.3.2'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.3.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
 
-    implementation 'androidx.compose.ui:ui:1.0.0-beta06'
+    implementation "androidx.compose.ui:ui:$compose_version"
     // Tooling support (Previews, etc.)
-    implementation 'androidx.compose.ui:ui-tooling:1.0.0-beta06'
+    implementation "androidx.compose.ui:ui-tooling:$compose_version"
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-    implementation 'androidx.compose.foundation:foundation:1.0.0-beta06'
+    implementation "androidx.compose.foundation:foundation:$compose_version"
     // Material Design
-    implementation 'androidx.compose.material:material:1.0.0-beta06'
+    implementation "androidx.compose.material:material:$compose_version"
     // Material design icons
-    implementation 'androidx.compose.material:material-icons-core:1.0.0-beta06'
-    implementation 'androidx.compose.material:material-icons-extended:1.0.0-beta06'
+    implementation "androidx.compose.material:material-icons-core:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
     // Integration with activities
-    implementation 'androidx.activity:activity-compose:1.3.0-alpha07'
+    implementation "androidx.activity:activity-compose:$compose_version"
     // Integration with ViewModels
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha04'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-beta01'
     // Integration with observables
-    implementation 'androidx.compose.runtime:runtime-livedata:1.0.0-beta06'
-    // viewmodel integration
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-beta06'
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     // navigation
-    implementation "androidx.navigation:navigation-compose:1.0.0-alpha10"
+    implementation "androidx.navigation:navigation-compose:2.4.0-alpha09"
 
     // image library
-    implementation "com.google.accompanist:accompanist-coil:0.9.1"
+    implementation "io.coil-kt:coil-compose:1.3.2"
 
     // UI Tests
-    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.0.0-beta06'
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
 
     // GSON
     implementation 'com.google.code.gson:gson:2.8.6'
@@ -93,10 +94,14 @@ dependencies {
     implementation "io.ktor:ktor-client-gson:$ktor_version"
 
     // media
-    implementation 'androidx.core:core-ktx:1.3.2'
-    implementation 'androidx.media:media:1.3.1'
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.media:media:1.4.1'
 
     // exoplayer
-    implementation 'com.google.android.exoplayer:exoplayer:2.13.3'
-    implementation 'com.google.android.exoplayer:extension-mediasession:2.13.3'
+    implementation 'com.google.android.exoplayer:exoplayer:2.15.0'
+    implementation 'com.google.android.exoplayer:extension-mediasession:2.15.0'
+
+    // pager
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+    implementation "androidx.paging:paging-compose:1.0.0-alpha12"
 }

@@ -1,26 +1,23 @@
 package hu.hitgyulekezete.hitradio.view.pages
 
-import android.media.session.PlaybackState
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import hu.hitgyulekezete.hitradio.audio.AudioController
+import hu.hitgyulekezete.hitradio.audio.controller.AudioController
+import hu.hitgyulekezete.hitradio.audio.controller.AudioStateManager
 import hu.hitgyulekezete.hitradio.audio.metadata.source.ChangingMetadataSource
-import hu.hitgyulekezete.hitradio.audio.metadata.source.Source
 import hu.hitgyulekezete.hitradio.audio.metadata.source.url.SourceUrl
 import hu.hitgyulekezete.hitradio.audio.service.MediaPlaybackService.Companion.LIVE_HITRADIO_ID
 import hu.hitgyulekezete.hitradio.model.podcast.PodcastProgram
-import hu.hitgyulekezete.hitradio.model.podcast.PodcastRepository
-import hu.hitgyulekezete.hitradio.model.program.CurrentProgramRepository
+import hu.hitgyulekezete.hitradio.model.podcast.repository.MockPodcastRepository
+import hu.hitgyulekezete.hitradio.model.program.Program
+import hu.hitgyulekezete.hitradio.model.program.current.CurrentProgramRepository
 import hu.hitgyulekezete.hitradio.model.program.api.ProgramApi
+import hu.hitgyulekezete.hitradio.model.program.repository.MockProgramRepository
 import hu.hitgyulekezete.hitradio.view.OnlineRadio
 import hu.hitgyulekezete.hitradio.view.podcast.PodcastProgramList
+import java.util.*
 
 @Composable
 fun HomePage(
@@ -29,7 +26,7 @@ fun HomePage(
     audioController: AudioController,
     programRepository: CurrentProgramRepository,
 ) {
-    val podcastRepository = PodcastRepository()
+    val podcastRepository = MockPodcastRepository()
 
     var isLoading by remember { mutableStateOf(true) }
     var podcastPrograms by remember { mutableStateOf<List<PodcastProgram>>(listOf()) }
@@ -47,11 +44,12 @@ fun HomePage(
 
     val mediaId = audioController.mediaId.observeAsState()
     val playbackState = audioController.playbackState.observeAsState()
-    val onlineRadioPlaybackState = if (mediaId.value != LIVE_HITRADIO_ID || playbackState.value == null) {
-        AudioController.PlaybackState.STOPPED
-    } else {
-        playbackState.value!!
-    }
+    val onlineRadioPlaybackState =
+        if (mediaId.value != LIVE_HITRADIO_ID || playbackState.value == null) {
+            AudioStateManager.PlaybackState.STOPPED
+        } else {
+            playbackState.value!!
+        }
 
     Column() {
         OnlineRadio(
@@ -68,7 +66,7 @@ fun HomePage(
                                 medium = "http://stream2.hit.hu:8080/low",
                                 high = "http://stream2.hit.hu:8080/high"
                             ),
-                            programApi = programApi,
+                            currentProgramRepository = programRepository
                         )
                     )
 

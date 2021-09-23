@@ -3,6 +3,7 @@ package hu.hitgyulekezete.hitradio.audio.service
 import android.net.Uri
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
+import android.util.Log
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -15,7 +16,11 @@ import hu.hitgyulekezete.hitradio.audio.metadata.source.url.SourceUrl
 import hu.hitgyulekezete.hitradio.audio.metadata.source.url.StreamQuality
 import hu.hitgyulekezete.hitradio.audio.service.MediaPlaybackService.Companion.LIVE_HITRADIO_ID
 import hu.hitgyulekezete.hitradio.audio.service.MediaPlaybackService.Companion.MEDIA_ROOT_ID
+import hu.hitgyulekezete.hitradio.model.program.Program
 import hu.hitgyulekezete.hitradio.model.program.api.ProgramApi
+import hu.hitgyulekezete.hitradio.model.program.current.CurrentProgramRepository
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 data class SourceMediaItem(
     val id: String,
@@ -93,6 +98,8 @@ data class SourceMediaItem(
     }
 
     companion object {
+        private val currentProgramRepository = CurrentProgramRepository(listOf())
+
         private val live: SourceMediaItem = SourceMediaItem(
             id = LIVE_HITRADIO_ID,
             name = "Élő adás",
@@ -106,11 +113,21 @@ data class SourceMediaItem(
                     medium = "http://stream2.hit.hu:8080/low",
                     high = "http://stream2.hit.hu:8080/high",
                 ),
-                programApi = ProgramApi(endpoint = "https://www.hitradio.hu/api/musor_ios.php")
+                currentProgramRepository = currentProgramRepository
             )
         )
 
+        private var programs: List<Program> = listOf()
+
         fun root(children: List<SourceMediaItem>): SourceMediaItem {
+            if (programs.isEmpty()) {
+                val programApi = ProgramApi("https://www.hitradio.hu/api/musor_ios.php")
+                GlobalScope.launch {
+                    programs = programApi.get()
+                    currentProgramRepository.setPrograms(programs)
+                }
+            }
+
             return SourceMediaItem(
                 id = MEDIA_ROOT_ID,
                 name = "Hitrádió",

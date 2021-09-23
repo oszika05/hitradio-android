@@ -6,33 +6,28 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CloudDone
 import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.coil.rememberCoilPainter
-import hu.hitgyulekezete.hitradio.audio.AudioController
+import coil.compose.rememberImagePainter
+import hu.hitgyulekezete.hitradio.audio.controller.AudioStateManager
 import hu.hitgyulekezete.hitradio.audio.metadata.artUriOrDefault
 import hu.hitgyulekezete.hitradio.audio.metadata.source.Source
-import hu.hitgyulekezete.hitradio.model.podcast.PodcastRepository
 import hu.hitgyulekezete.hitradio.view.PlayPauseButton
 
 @Composable
 fun PodcastListItem(
     podcast: Source,
-    playbackState: AudioController.PlaybackState,
+    playbackState: AudioStateManager.PlaybackState,
     getIsDownloaded: (Source) -> Boolean,
     downloadPodcast: (Source) -> Unit,
     onPlay: (Source) -> Unit
@@ -50,9 +45,7 @@ fun PodcastListItem(
             }
     ) {
         Image(
-            painter = rememberCoilPainter(
-                request = podcast.metadata.artUriOrDefault()
-            ),
+            painter = rememberImagePainter(podcast.metadata.artUriOrDefault()),
             contentDescription = "image",
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -110,7 +103,7 @@ fun PodcastListItem(
 @Preview
 @Composable
 fun PodcastListItemPreview() {
-    var playbackState by remember { mutableStateOf(AudioController.PlaybackState.STOPPED) }
+    var playbackState by remember { mutableStateOf(AudioStateManager.PlaybackState.STOPPED) }
     PodcastListItem(
         onPlay = {
             playbackState = playbackState.toggle()

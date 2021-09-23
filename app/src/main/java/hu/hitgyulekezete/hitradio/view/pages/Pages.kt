@@ -1,11 +1,13 @@
 package hu.hitgyulekezete.hitradio.view
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import hu.hitgyulekezete.hitradio.audio.AudioController
-import hu.hitgyulekezete.hitradio.model.program.CurrentProgramRepository
+import hu.hitgyulekezete.hitradio.audio.controller.AudioController
+import hu.hitgyulekezete.hitradio.audio.controller.DownloadManager
+import hu.hitgyulekezete.hitradio.model.program.current.CurrentProgramRepository
 import hu.hitgyulekezete.hitradio.model.program.api.ProgramApi
 import hu.hitgyulekezete.hitradio.view.pages.HomePage
 import hu.hitgyulekezete.hitradio.view.pages.NotFoundPage
@@ -23,6 +25,7 @@ fun Pages(
     audioController: AudioController,
     programApi: ProgramApi,
     programRepository: CurrentProgramRepository,
+    downloadManager: DownloadManager,
 ) {
     NavHost(navController = navController, startDestination = PAGE_HOME) {
         composable(PAGE_HOME) {
@@ -40,6 +43,7 @@ fun Pages(
                 PodcastProgramPage(
                     podcastProgramId = backStackEntry.arguments?.getString(podcastProgramIdPath)!!,
                     audioController = audioController,
+                    downloadManager = downloadManager,
                 )
             }
         }

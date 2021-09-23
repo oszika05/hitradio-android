@@ -11,11 +11,11 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import hu.hitgyulekezete.hitradio.audio.AudioController
+import hu.hitgyulekezete.hitradio.audio.controller.AudioStateManager
 
 @Composable
 fun PlayPauseButton(
-    playbackState: AudioController.PlaybackState,
+    playbackState: AudioStateManager.PlaybackState,
     onClick: () -> Unit
 ) {
     IconButton(

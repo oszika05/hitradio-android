@@ -1,107 +1,57 @@
 package hu.hitgyulekezete.hitradio.view.nowplaying
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PlayArrow
+import android.media.AudioManager
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import hu.hitgyulekezete.hitradio.audio.AudioController
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import com.google.accompanist.coil.rememberCoilPainter
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import hu.hitgyulekezete.hitradio.audio.VolumeObserver
 import hu.hitgyulekezete.hitradio.audio.metadata.Metadata
-import hu.hitgyulekezete.hitradio.audio.metadata.MetadataType
-import hu.hitgyulekezete.hitradio.audio.metadata.artUriOrDefault
-import hu.hitgyulekezete.hitradio.view.PlayPauseButton
+import hu.hitgyulekezete.hitradio.view.Pages
+import kotlin.math.roundToInt
+import androidx.compose.runtime.getValue
+import hu.hitgyulekezete.hitradio.audio.controller.AudioController
+import hu.hitgyulekezete.hitradio.audio.controller.AudioStateManager
 
+@ExperimentalMaterialApi
 @Composable
 fun NowPlayingBar(
-    height: Dp,
-    metadata: Metadata,
-    playbackState: AudioController.PlaybackState,
-    onPlayPausePressed: () -> Unit
+    navController: NavController,
+    audioController: AudioController,
+    audioManager: AudioManager,
+    volumeObserver: VolumeObserver,
+    content: @Composable () -> Unit,
 ) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .height(height)
-    ) {
-        Image(
-            painter = rememberCoilPainter(
-                request = metadata.artUriOrDefault(),
-            ),
-            contentScale = ContentScale.Crop,
-            contentDescription = "album image",
-            modifier = Modifier
-                .aspectRatio(1f)
-                .padding(all = 4.dp)
-                .clip(
-                    RoundedCornerShape(12.dp)
-                )
-        )
+    val scope = rememberCoroutineScope()
 
-        Column(
-            Modifier
-                .padding(4.dp),
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Text(
-                metadata.title,
-                Modifier
-                    .padding(top = 3.dp),
-                style = MaterialTheme.typography.h6
+    val metadata by audioController.metadata.observeAsState()
+    val playbackState by audioController.playbackState.observeAsState()
+    val seekPosition by audioController.seekPosition.observeAsState()
+    val volume by volumeObserver.volume.observeAsState(0.0f)
+
+    NowPlayingBarLayout(
+        metadata = metadata ?: Metadata.Empty,
+        playbackState = playbackState ?: AudioStateManager.PlaybackState.STOPPED,
+        seekPercentage = seekPosition,
+        volumePercentage = volume,
+        onSeekTo = {
+            audioController.seekTo(it)
+        },
+        onSetVolume = {
+            audioManager.setStreamVolume(
+                AudioManager.STREAM_MUSIC,
+                (it * audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)).roundToInt(),
+                0
             )
-            if (metadata.subtitle != null) {
-                Text(
-                    metadata.subtitle,
-                    Modifier.padding(top = 1.dp),
-                    style = MaterialTheme.typography.subtitle1
-                )
-            }
-
-        }
-
-
-        Row(
-            Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.End,
-        ) {
-            PlayPauseButton(playbackState, onPlayPausePressed)
-        }
-    }
-}
-
-@Preview
-@Composable
-fun PreviewNowPlayingBar() {
-
-    var playbackState by remember { mutableStateOf(AudioController.PlaybackState.STOPPED) }
-
-    NowPlayingBar(
-        height = 64.dp,
-        playbackState = playbackState,
-        metadata = Metadata(
-            title = "Title",
-            subtitle = "Subtitle",
-            artUri = null,
-            type = MetadataType.LIVE
-        ),
+        },
         onPlayPausePressed = {
-            playbackState = playbackState.toggle()
-        }
-    )
+            audioController.playPause()
+        }) {
+
+        content()
+    }
 }

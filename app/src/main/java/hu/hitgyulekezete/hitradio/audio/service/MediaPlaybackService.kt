@@ -232,12 +232,14 @@ class MediaPlaybackService : MediaBrowserServiceCompat() {
 
         }
 
-        playerNotificationManager = PlayerNotificationManager(
+        playerNotificationManager = PlayerNotificationManager.Builder(
             this,
-            NOTIFICATION_CHANNEL_ID,
             NOTIFICATION_ID,
-            adapter,
-        )
+            NOTIFICATION_CHANNEL_ID
+        ).run {
+            setMediaDescriptionAdapter(adapter)
+            build()
+        }
 
         playerNotificationManager.setPlayer(player)
     }
@@ -257,10 +259,8 @@ class MediaPlaybackService : MediaBrowserServiceCompat() {
             return
         }
 
-
         observer = object : Source.MetadataObserver {
             override fun onMetadataChanged(metadata: Metadata) {
-//                player.applicationLooper
                 Handler(player.applicationLooper).post {
                     if (currentMetadata == metadata) {
                         return@post

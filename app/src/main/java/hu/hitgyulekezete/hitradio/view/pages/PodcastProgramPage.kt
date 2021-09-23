@@ -2,19 +2,21 @@ package hu.hitgyulekezete.hitradio.view.pages
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import hu.hitgyulekezete.hitradio.audio.AudioController
-import hu.hitgyulekezete.hitradio.audio.metadata.source.Source
+import hu.hitgyulekezete.hitradio.audio.controller.AudioController
+import hu.hitgyulekezete.hitradio.audio.controller.AudioStateManager
+import hu.hitgyulekezete.hitradio.audio.controller.DownloadManager
 import hu.hitgyulekezete.hitradio.model.podcast.PodcastProgram
-import hu.hitgyulekezete.hitradio.model.podcast.PodcastRepository
+import hu.hitgyulekezete.hitradio.model.podcast.repository.MockPodcastRepository
+import hu.hitgyulekezete.hitradio.model.podcast.repository.PodcastRepository
 import hu.hitgyulekezete.hitradio.view.podcast.program.PodcastProgram
-import kotlinx.coroutines.launch
 
 @Composable
 fun PodcastProgramPage(
     podcastProgramId: String,
     audioController: AudioController,
+    downloadManager: DownloadManager,
 ) {
-    val podcastRepository = PodcastRepository()
+    val podcastRepository = MockPodcastRepository()
 
     val currentMediaId = audioController.mediaId.observeAsState()
     val playbackState = audioController.playbackState.observeAsState()
@@ -51,12 +53,12 @@ fun PodcastProgramPage(
             }
         },
         currentMediaId = currentMediaId.value,
-        playbackState = playbackState.value ?: AudioController.PlaybackState.STOPPED,
+        playbackState = playbackState.value ?: AudioStateManager.PlaybackState.STOPPED,
         getIsDownloaded = { source ->
-            audioController.isDownloaded(source)
+            downloadManager.isDownloaded(source)
         },
         downloadPodcast = { source ->
-            audioController.downloadContent(source)
+            downloadManager.downloadContent(source)
         }
     )
 }

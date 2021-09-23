@@ -4,7 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -13,9 +13,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.rememberImagePainter
 import hu.hitgyulekezete.hitradio.model.podcast.PodcastProgram
-import hu.hitgyulekezete.hitradio.model.podcast.PodcastRepository
+import hu.hitgyulekezete.hitradio.model.podcast.repository.MockPodcastRepository
+import hu.hitgyulekezete.hitradio.model.podcast.repository.PodcastRepository
+import hu.hitgyulekezete.hitradio.model.program.Program
 
 @Composable
 fun PodcastProgramListItem(
@@ -28,9 +30,7 @@ fun PodcastProgramListItem(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            painter = rememberCoilPainter(
-                request = program.artUriOrDefault(),
-            ),
+            painter = rememberImagePainter(program.artUriOrDefault(),),
             contentDescription = "album image",
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -56,9 +56,7 @@ fun PodcastProgramListItem(
 @Preview
 @Composable
 fun PodcastProgramListItemPreview() {
-    val repo = PodcastRepository()
-
     PodcastProgramListItem(
-        program = repo.podcastPrograms[0]
+        program = PodcastProgram.test1,
     )
 }

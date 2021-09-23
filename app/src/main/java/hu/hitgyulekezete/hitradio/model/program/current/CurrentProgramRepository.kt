@@ -1,8 +1,9 @@
-package hu.hitgyulekezete.hitradio.model.program
+package hu.hitgyulekezete.hitradio.model.program.current
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import hu.hitgyulekezete.hitradio.model.program.Program
 import java.util.*
 import kotlin.concurrent.schedule
 

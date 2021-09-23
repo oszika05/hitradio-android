@@ -1,4 +1,4 @@
-package hu.hitgyulekezete.hitradio.model.program.dto
+package hu.hitgyulekezete.hitradio.model.program.api.dto
 
 data class ProgramsResultDto(
     val schedule: List<Day>
@@ -20,6 +20,4 @@ data class ProgramsResultDto(
 
     }
 }
-
-
 

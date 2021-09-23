@@ -2,7 +2,7 @@ package hu.hitgyulekezete.hitradio.model.program.api
 
 import android.util.Log
 import hu.hitgyulekezete.hitradio.model.program.Program
-import hu.hitgyulekezete.hitradio.model.program.dto.ProgramsResultDto
+import hu.hitgyulekezete.hitradio.model.program.api.dto.ProgramsResultDto
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.json.*

@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import hu.hitgyulekezete.hitradio.audio.AudioController
 import hu.hitgyulekezete.hitradio.audio.metadata.Metadata
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -34,16 +33,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.rememberImagePainter
+import hu.hitgyulekezete.hitradio.audio.controller.AudioStateManager
 import hu.hitgyulekezete.hitradio.audio.metadata.MetadataType
 import hu.hitgyulekezete.hitradio.audio.metadata.artUriOrDefault
 import hu.hitgyulekezete.hitradio.view.PlayPauseButton
 
 @Composable
 fun NowPlayingBarExpanded(
-    playbackState: AudioController.PlaybackState,
+    playbackState: AudioStateManager.PlaybackState,
     metadata: Metadata,
-    seekPercentage: Float,
+    seekPercentage: Float?,
     volumePercentage: Float,
     onPlayPause: () -> Unit,
     onSeekTo: (Float) -> Unit,
@@ -75,9 +75,7 @@ fun NowPlayingBarExpanded(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
-                painter = rememberCoilPainter(
-                    request = metadata.artUriOrDefault(),
-                ),
+                painter = rememberImagePainter(metadata.artUriOrDefault()),
                 contentScale = ContentScale.Crop,
                 contentDescription = "album image",
                 modifier = Modifier
@@ -93,7 +91,9 @@ fun NowPlayingBarExpanded(
                 .padding(horizontal = 12.dp)
                 .fillMaxWidth()
         ) {
-            Slider(value = seekPercentage, onValueChange = { onSeekTo(it) })
+            seekPercentage?.let { seekPercentage ->
+                Slider(value = seekPercentage, onValueChange = { onSeekTo(it) })
+            }
         }
         Row(
             Modifier
@@ -159,7 +159,7 @@ fun NowPlayingBarExpanded(
 @Preview
 @Composable
 fun PreviewNowPlayingBarExpanded() {
-    var playbackState by remember { mutableStateOf(AudioController.PlaybackState.STOPPED) }
+    var playbackState by remember { mutableStateOf(AudioStateManager.PlaybackState.STOPPED) }
     var seekPercentage by remember { mutableStateOf(0.0f) }
     var volumePercentage by remember { mutableStateOf(0.0f) }
 

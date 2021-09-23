@@ -7,18 +7,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
+import hu.hitgyulekezete.hitradio.audio.controller.AudioController
+import hu.hitgyulekezete.hitradio.audio.controller.AudioStateManager
+
+
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import hu.hitgyulekezete.hitradio.audio.AudioController
 import hu.hitgyulekezete.hitradio.audio.metadata.source.Source
 import hu.hitgyulekezete.hitradio.model.podcast.PodcastProgram
 import hu.hitgyulekezete.hitradio.view.podcast.PodcastProgramListItem
@@ -27,7 +26,7 @@ import hu.hitgyulekezete.hitradio.view.podcast.PodcastProgramListItem
 fun PodcastProgram(
     podcastProgram: PodcastProgram,
     currentMediaId: String?,
-    playbackState: AudioController.PlaybackState,
+    playbackState: AudioStateManager.PlaybackState,
     getIsDownloaded: (Source) -> Boolean,
     downloadPodcast: (Source) -> Unit,
     onPlay: (Source) -> Unit,
@@ -54,7 +53,7 @@ fun PodcastProgram(
                     playbackState = if (currentMediaId == podcast.id) {
                         playbackState
                     } else {
-                        AudioController.PlaybackState.STOPPED
+                        AudioStateManager.PlaybackState.STOPPED
                     }
                 )
             }
@@ -66,7 +65,7 @@ fun PodcastProgram(
 @Composable
 fun PodcastsPreview() {
     var currentMediaId by remember { mutableStateOf<String?>(null) }
-    var playbackState by remember { mutableStateOf(AudioController.PlaybackState.STOPPED) }
+    var playbackState by remember { mutableStateOf(AudioStateManager.PlaybackState.STOPPED) }
 
     PodcastProgram(
         podcastProgram = PodcastProgram.test1,
@@ -75,7 +74,7 @@ fun PodcastsPreview() {
                 playbackState = playbackState.toggle()
             } else {
                 currentMediaId = source.id
-                playbackState = AudioController.PlaybackState.PLAYING
+                playbackState = AudioStateManager.PlaybackState.PLAYING
             }
 
         },
