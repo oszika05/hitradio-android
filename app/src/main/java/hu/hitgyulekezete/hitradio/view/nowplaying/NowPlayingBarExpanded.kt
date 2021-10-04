@@ -92,7 +92,14 @@ fun NowPlayingBarExpanded(
                 .fillMaxWidth()
         ) {
             seekPercentage?.let { seekPercentage ->
-                Slider(value = seekPercentage, onValueChange = { onSeekTo(it) })
+                FastSlider(
+                    value = seekPercentage,
+                    onValueChange = {
+                        onSeekTo(it)
+                    },
+                    continuouslyUpdate = false
+                )
+//                Slider(value = seekPercentage, onValueChange = { onSeekTo(it) })
             }
         }
         Row(
@@ -142,11 +149,24 @@ fun NowPlayingBarExpanded(
             }) {
                 Icon(Icons.Default.VolumeDown, "halkítás")
             }
-            Slider(
+            FastSlider(
                 value = volumePercentage,
-                onValueChange = { onSetVolume(it) },
+                onValueChange = {
+                    onSetVolume(it)
+                },
+                continuouslyUpdate = true,
                 modifier = Modifier.weight(1f),
             )
+//            Slider(
+//                value = volumePercentage,
+//                onValueChange = {
+//                    onSetVolume(it)
+//                },
+//                modifier = Modifier.weight(1f),
+//                onValueChangeFinished = {
+//
+//                }
+//            )
             IconButton(onClick = {
                 onSetVolume((volumePercentage + 0.1f).coerceAtMost(1f))
             }) {

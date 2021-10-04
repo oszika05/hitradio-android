@@ -20,7 +20,7 @@ class SeekPositionManager(
 
     private val positionUpdater = object : Runnable {
         override fun run() {
-            handler.postDelayed(this, 1000)
+            handler.postDelayed(this, 1000 / 60)
 
             val length = mediaController.metadata.getLengthInMs()
 
