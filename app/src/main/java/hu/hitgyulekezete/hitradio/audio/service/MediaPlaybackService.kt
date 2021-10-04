@@ -141,7 +141,6 @@ class MediaPlaybackService : MediaBrowserServiceCompat() {
                     extras: Bundle?
                 ) {
                     currentMediaId = mediaId
-                    Log.d("SERVICE", "hfakjsdhfkadsjhfksjdhfksdjhfskjfhskdjh")
 
                     val root = getItems()
                     val media = root.findById(mediaId)
@@ -307,7 +306,6 @@ class MediaPlaybackService : MediaBrowserServiceCompat() {
     }
 
     override fun onLoadItem(itemId: String?, result: Result<MediaBrowserCompat.MediaItem>) {
-        Log.d("SERVICE", "onLoadItem $itemId")
         val root = getItems()
 
         val element = root.findById(itemId ?: LIVE_HITRADIO_ID)

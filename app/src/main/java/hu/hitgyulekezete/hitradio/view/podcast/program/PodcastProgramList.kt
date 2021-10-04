@@ -32,7 +32,6 @@ fun PodcastProgramList(
             Box(
                 Modifier
                     .clickable {
-                        Log.d("LINK", makePodcastProgramPageLink(program.id))
                         navController.navigate(makePodcastProgramPageLink(program.id))
                     }
             ) {

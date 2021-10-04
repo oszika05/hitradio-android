@@ -3,6 +3,7 @@ package hu.hitgyulekezete.hitradio.model.program.current
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import hu.hitgyulekezete.hitradio.audio.service.SourceMediaItem
 import hu.hitgyulekezete.hitradio.model.program.Program
 import java.util.*
 import kotlin.concurrent.schedule
@@ -39,6 +40,7 @@ class CurrentProgramRepository(programs: List<Program>) {
 
     fun addObserver(observer: OnChangeListener) {
         observers.add(observer)
+        observer.onCurrentProgramChange(currentProgram)
     }
 
     fun removeObserver(observer: OnChangeListener) {

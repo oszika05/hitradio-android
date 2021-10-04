@@ -50,7 +50,6 @@ class ProgramApi(
     private fun convertPrograms(programs: ProgramsResultDto): List<Program> {
 
         return programs.schedule.foldIndexed(listOf<Program>()) { day, programs, events ->
-            Log.d("fold", "fold $day")
             programs + events.events
                 .filter { event ->
                     event.show_time.contains(':') && event.show_time_end.contains(':')
