@@ -11,18 +11,15 @@ import hu.hitgyulekezete.hitradio.audio.metadata.source.url.SourceUrl
 import hu.hitgyulekezete.hitradio.audio.service.MediaPlaybackService.Companion.LIVE_HITRADIO_ID
 import hu.hitgyulekezete.hitradio.model.podcast.PodcastProgram
 import hu.hitgyulekezete.hitradio.model.podcast.repository.MockPodcastRepository
-import hu.hitgyulekezete.hitradio.model.program.Program
-import hu.hitgyulekezete.hitradio.model.program.current.CurrentProgramRepository
-import hu.hitgyulekezete.hitradio.model.program.api.ProgramApi
-import hu.hitgyulekezete.hitradio.model.program.repository.MockProgramRepository
+import hu.hitgyulekezete.hitradio.model.programguide.current.CurrentProgramRepository
+import hu.hitgyulekezete.hitradio.model.programguide.api.ProgramGuideApi
 import hu.hitgyulekezete.hitradio.view.OnlineRadio
 import hu.hitgyulekezete.hitradio.view.podcast.PodcastProgramList
-import java.util.*
 
 @Composable
 fun HomePage(
     navController: NavHostController,
-    programApi: ProgramApi,
+    programApi: ProgramGuideApi,
     audioController: AudioController,
     programRepository: CurrentProgramRepository,
 ) {

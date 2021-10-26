@@ -1,19 +1,11 @@
 package hu.hitgyulekezete.hitradio.model.program
 
-import java.util.*
-
 data class Program(
     val id: String,
-    val title: String,
-    val start: Date,
-    val end: Date,
-    val description: String,
-    val replay: String // TODO??
+    val name: String,
+    val picture: String?,
+    val description: String?
 ) {
-    fun isCurrentlyPlaying(date: Date): Boolean {
-        return date.after(start) && date.before(end)
-    }
-
-    val titleWithReplay: String
-        get() = "$title $replay".trim()
+    val pictureOrDefault: String
+        get() = picture ?: "https://myonlineradio.hu/public/uploads/radio_img/hit-radio/play_250_250.jpg"
 }

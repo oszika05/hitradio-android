@@ -4,31 +4,22 @@ import android.content.Context
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.navigation.compose.rememberNavController
-import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.HiltAndroidApp
 import hu.hitgyulekezete.hitradio.audio.VolumeObserver
 import hu.hitgyulekezete.hitradio.audio.controller.AudioController
-import hu.hitgyulekezete.hitradio.audio.controller.AudioStateManager
 import hu.hitgyulekezete.hitradio.audio.controller.DownloadManager
-import hu.hitgyulekezete.hitradio.audio.metadata.Metadata
-import hu.hitgyulekezete.hitradio.model.program.current.CurrentProgramRepository
-import hu.hitgyulekezete.hitradio.model.program.api.ProgramApi
-import hu.hitgyulekezete.hitradio.view.Pages
-import hu.hitgyulekezete.hitradio.view.nowplaying.NowPlayingBar
-import hu.hitgyulekezete.hitradio.view.nowplaying.NowPlayingBarLayout
+import hu.hitgyulekezete.hitradio.model.programguide.current.CurrentProgramRepository
+import hu.hitgyulekezete.hitradio.model.programguide.api.ProgramGuideApi
 import hu.hitgyulekezete.hitradio.view.pages.Layout
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -37,7 +28,7 @@ class MainActivity : ComponentActivity() {
         AudioController(this@MainActivity)
     }
 
-    private val programApi = ProgramApi(endpoint = "https://www.hitradio.hu/api/musor_ios.php")
+    private val programApi = ProgramGuideApi(endpoint = "https://www.hitradio.hu/api/musor_ios.php")
     private var currentProgramRepository: CurrentProgramRepository =
         CurrentProgramRepository(listOf())
 

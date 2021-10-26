@@ -1,8 +1,7 @@
-package hu.hitgyulekezete.hitradio.model.program.api
+package hu.hitgyulekezete.hitradio.model.programguide.api
 
-import android.util.Log
-import hu.hitgyulekezete.hitradio.model.program.Program
-import hu.hitgyulekezete.hitradio.model.program.api.dto.ProgramsResultDto
+import hu.hitgyulekezete.hitradio.model.programguide.ProgramGuideItem
+import hu.hitgyulekezete.hitradio.model.programguide.api.dto.ProgramGuideResultDto
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.json.*
@@ -12,7 +11,7 @@ import kotlinx.coroutines.withContext
 import java.lang.Exception
 import java.util.*
 
-class ProgramApi(
+class ProgramGuideApi(
     private val endpoint: String
 ) {
     private val client = HttpClient(OkHttp) {
@@ -47,9 +46,9 @@ class ProgramApi(
         }
     }
 
-    private fun convertPrograms(programs: ProgramsResultDto): List<Program> {
+    private fun convertPrograms(programs: ProgramGuideResultDto): List<ProgramGuideItem> {
 
-        return programs.schedule.foldIndexed(listOf<Program>()) { day, programs, events ->
+        return programs.schedule.foldIndexed(listOf<ProgramGuideItem>()) { day, programs, events ->
             programs + events.events
                 .filter { event ->
                     event.show_time.contains(':') && event.show_time_end.contains(':')
@@ -65,7 +64,7 @@ class ProgramApi(
                     start != null && end != null
                 }
                 .map { (event, start, end) ->
-                    Program(
+                    ProgramGuideItem(
                         id = event.show_id,
                         title = event.show_title,
                         start = start!!,
@@ -77,10 +76,10 @@ class ProgramApi(
         }
     }
 
-    suspend fun get(): List<Program> {
+    suspend fun get(): List<ProgramGuideItem> {
         return try {
             withContext(Dispatchers.IO) {
-                val result = client.get<ProgramsResultDto>(endpoint)
+                val result = client.get<ProgramGuideResultDto>(endpoint)
                 convertPrograms(result)
             }
         } catch (e: Exception) {

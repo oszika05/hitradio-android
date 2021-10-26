@@ -1,11 +1,11 @@
-package hu.hitgyulekezete.hitradio.model.program.repository
+package hu.hitgyulekezete.hitradio.model.programguide.repository
 
-import hu.hitgyulekezete.hitradio.model.program.Program
+import hu.hitgyulekezete.hitradio.model.programguide.ProgramGuideItem
 import java.util.*
 
-class MockProgramRepository(
-    private val programs: List<Program> = listOf(
-        Program(
+class MockProgramGuideRepository(
+    private val programs: List<ProgramGuideItem> = listOf(
+        ProgramGuideItem(
             id = "1",
             title = "Teszt1",
             start = Calendar.getInstance().run {
@@ -19,7 +19,7 @@ class MockProgramRepository(
             description = "lorem ipsum",
             replay = ""
         ),
-        Program(
+        ProgramGuideItem(
             id = "2",
             title = "Teszt2",
             start = Calendar.getInstance().run {
@@ -33,7 +33,7 @@ class MockProgramRepository(
             description = "lorem ipsum",
             replay = "(ism.)"
         ),
-        Program(
+        ProgramGuideItem(
             id = "3",
             title = "Teszt3",
             start = Calendar.getInstance().run {
@@ -49,9 +49,9 @@ class MockProgramRepository(
             replay = ""
         ),
     )
-) : ProgramRepository {
+) : ProgramGuideRepository {
 
-    override suspend fun getPrograms(): List<Program> {
+    override suspend fun getPrograms(): List<ProgramGuideItem> {
         return programs
     }
 }

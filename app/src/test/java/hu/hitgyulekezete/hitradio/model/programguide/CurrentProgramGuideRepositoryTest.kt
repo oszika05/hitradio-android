@@ -1,15 +1,15 @@
-package hu.hitgyulekezete.hitradio.model.program
+package hu.hitgyulekezete.hitradio.model.programguide
 
-import hu.hitgyulekezete.hitradio.model.program.current.CurrentProgramRepository
+import hu.hitgyulekezete.hitradio.model.programguide.current.CurrentProgramRepository
 import org.junit.Assert.*
 import org.junit.Test
 import java.util.*
 
-class CurrentProgramRepositoryTest {
+class CurrentProgramGuideRepositoryTest {
     @Test
     fun correctlyReturnsCurrentProgram() {
 
-        val currentMockProgram = Program(
+        val currentMockProgram = ProgramGuideItem(
             id = "1",
             title = "1",
             start = Calendar.getInstance().run {
@@ -25,7 +25,7 @@ class CurrentProgramRepositoryTest {
         )
 
         val repo = CurrentProgramRepository(listOf(
-            Program(
+            ProgramGuideItem(
                 id = "2",
                 title = "2",
                 start = Calendar.getInstance().run {
@@ -40,7 +40,7 @@ class CurrentProgramRepositoryTest {
                 replay = "",
             ),
             currentMockProgram,
-            Program(
+            ProgramGuideItem(
                 id = "3",
                 title = "3",
                 start = Calendar.getInstance().run {
@@ -64,7 +64,7 @@ class CurrentProgramRepositoryTest {
     @Test
     fun correctlyReturnsNextProgram() {
 
-        val nextMockProgram = Program(
+        val nextMockProgram = ProgramGuideItem(
             id = "1",
             title = "1",
             start = Calendar.getInstance().run {
@@ -80,7 +80,7 @@ class CurrentProgramRepositoryTest {
         )
 
         val repo = CurrentProgramRepository(listOf(
-            Program(
+            ProgramGuideItem(
                 id = "2",
                 title = "2",
                 start = Calendar.getInstance().run {
@@ -95,7 +95,7 @@ class CurrentProgramRepositoryTest {
                 replay = "",
             ),
             nextMockProgram,
-            Program(
+            ProgramGuideItem(
                 id = "3",
                 title = "3",
                 start = Calendar.getInstance().run {

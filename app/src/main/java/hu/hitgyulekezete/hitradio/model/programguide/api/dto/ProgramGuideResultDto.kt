@@ -1,6 +1,6 @@
-package hu.hitgyulekezete.hitradio.model.program.api.dto
+package hu.hitgyulekezete.hitradio.model.programguide.api.dto
 
-data class ProgramsResultDto(
+data class ProgramGuideResultDto(
     val schedule: List<Day>
 ) {
 

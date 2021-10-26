@@ -1,14 +1,10 @@
 package hu.hitgyulekezete.hitradio.audio.metadata.source
 
-import android.util.Log
 import hu.hitgyulekezete.hitradio.audio.metadata.Metadata
 import hu.hitgyulekezete.hitradio.audio.metadata.MetadataType
 import hu.hitgyulekezete.hitradio.audio.metadata.source.url.SourceUrl
-import hu.hitgyulekezete.hitradio.model.program.current.CurrentProgramRepository
-import hu.hitgyulekezete.hitradio.model.program.Program
-import hu.hitgyulekezete.hitradio.model.program.api.ProgramApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import hu.hitgyulekezete.hitradio.model.programguide.current.CurrentProgramRepository
+import hu.hitgyulekezete.hitradio.model.programguide.ProgramGuideItem
 
 class ChangingMetadataSource(
     override val id: String,
@@ -44,7 +40,7 @@ class ChangingMetadataSource(
         currentProgramRepository?.end()
     }
 
-    override fun onCurrentProgramChange(newProgram: Program?) {
+    override fun onCurrentProgramChange(newProgram: ProgramGuideItem?) {
         _metadata = Metadata(
             title = newProgram?.titleWithReplay ?: "",
             subtitle = name,

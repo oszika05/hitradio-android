@@ -1,14 +1,12 @@
-package hu.hitgyulekezete.hitradio.model.program.current
+package hu.hitgyulekezete.hitradio.model.programguide.current
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import hu.hitgyulekezete.hitradio.audio.service.SourceMediaItem
-import hu.hitgyulekezete.hitradio.model.program.Program
+import hu.hitgyulekezete.hitradio.model.programguide.ProgramGuideItem
 import java.util.*
 import kotlin.concurrent.schedule
 
-class CurrentProgramRepository(programs: List<Program>) {
+class CurrentProgramRepository(programs: List<ProgramGuideItem>) {
     private var isStarted = false
     private var programs = programs.sortedBy { it.start }
 
@@ -16,16 +14,16 @@ class CurrentProgramRepository(programs: List<Program>) {
 
     private val observers: MutableList<OnChangeListener> = mutableListOf()
 
-    var currentProgram: Program? = getCurrent()
+    var currentProgram: ProgramGuideItem? = getCurrent()
         private set
 
-    private val _currentProgramLiveData = MutableLiveData<Program?>(null)
-    val currentProgramLiveData: LiveData<Program?> = _currentProgramLiveData
+    private val _currentProgramLiveData = MutableLiveData<ProgramGuideItem?>(null)
+    val currentProgramLiveData: LiveData<ProgramGuideItem?> = _currentProgramLiveData
 
-    private val _nextPrograms = MutableLiveData<List<Program>>(listOf())
-    val nextPrograms: LiveData<List<Program>> = _nextPrograms
+    private val _nextPrograms = MutableLiveData<List<ProgramGuideItem>>(listOf())
+    val nextPrograms: LiveData<List<ProgramGuideItem>> = _nextPrograms
 
-    fun setPrograms(programs: List<Program>) {
+    fun setPrograms(programs: List<ProgramGuideItem>) {
         val wasStarted = isStarted
         if (isStarted) {
             end()
@@ -47,7 +45,7 @@ class CurrentProgramRepository(programs: List<Program>) {
         observers.remove(observer)
     }
 
-    fun getNext(): Program? {
+    fun getNext(): ProgramGuideItem? {
         val now = Date()
 
         for (program in programs) {
@@ -59,7 +57,7 @@ class CurrentProgramRepository(programs: List<Program>) {
         return null
     }
 
-    fun getCurrent(): Program? {
+    fun getCurrent(): ProgramGuideItem? {
         val now = Date()
         for (program in programs) {
             if (program.isCurrentlyPlaying(now)) {
@@ -74,7 +72,7 @@ class CurrentProgramRepository(programs: List<Program>) {
         return null
     }
 
-    private fun getProgramsAfter(date: Date): List<Program> {
+    private fun getProgramsAfter(date: Date): List<ProgramGuideItem> {
         return programs.filter { it.start.after(date) }
     }
 
@@ -129,6 +127,6 @@ class CurrentProgramRepository(programs: List<Program>) {
     }
 
     interface OnChangeListener {
-        fun onCurrentProgramChange(newProgram: Program?)
+        fun onCurrentProgramChange(newProgram: ProgramGuideItem?)
     }
 }

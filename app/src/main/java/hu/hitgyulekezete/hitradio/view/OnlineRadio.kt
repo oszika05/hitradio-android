@@ -15,8 +15,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import hu.hitgyulekezete.hitradio.audio.controller.AudioStateManager
-import hu.hitgyulekezete.hitradio.model.program.current.CurrentProgramRepository
-import hu.hitgyulekezete.hitradio.model.program.Program
+import hu.hitgyulekezete.hitradio.model.programguide.current.CurrentProgramRepository
+import hu.hitgyulekezete.hitradio.model.programguide.ProgramGuideItem
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -144,7 +144,7 @@ fun OnlineRadioPreview() {
 
     val currentProgramRepository = CurrentProgramRepository(
         listOf(
-            Program(
+            ProgramGuideItem(
                 id = "1",
                 title = "Teszt műsor",
                 description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec aliquet, nisi et commodo scelerisque, turpis lorem elementum sem, at maximus nunc elit placerat leo. Phasellus et nibh sed lacus pulvinar faucibus id ut lectus.",

@@ -15,9 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import hu.hitgyulekezete.hitradio.model.podcast.PodcastProgram
-import hu.hitgyulekezete.hitradio.model.podcast.repository.MockPodcastRepository
-import hu.hitgyulekezete.hitradio.model.podcast.repository.PodcastRepository
-import hu.hitgyulekezete.hitradio.model.program.Program
 
 @Composable
 fun PodcastProgramListItem(
