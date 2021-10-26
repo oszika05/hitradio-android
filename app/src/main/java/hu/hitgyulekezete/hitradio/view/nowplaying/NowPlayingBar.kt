@@ -2,6 +2,9 @@ package hu.hitgyulekezete.hitradio.view.nowplaying
 
 import android.media.AudioManager
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableState
+import androidx.compose.material.Text
+import androidx.compose.material.rememberSwipeableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
@@ -14,16 +17,18 @@ import hu.hitgyulekezete.hitradio.audio.metadata.Metadata
 import hu.hitgyulekezete.hitradio.view.Pages
 import kotlin.math.roundToInt
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import hu.hitgyulekezete.hitradio.audio.controller.AudioController
 import hu.hitgyulekezete.hitradio.audio.controller.AudioStateManager
 
 @ExperimentalMaterialApi
 @Composable
 fun NowPlayingBar(
-    navController: NavController,
     audioController: AudioController,
     audioManager: AudioManager,
     volumeObserver: VolumeObserver,
+    modifier: Modifier = Modifier,
+    swipeableState: SwipeableState<Int>  = rememberSwipeableState(0),
     content: @Composable () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
@@ -50,8 +55,10 @@ fun NowPlayingBar(
         },
         onPlayPausePressed = {
             audioController.playPause()
-        }) {
-
+        },
+        modifier = modifier,
+        swipeableState = swipeableState,
+    ) {
         content()
     }
 }

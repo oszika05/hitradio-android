@@ -11,6 +11,9 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.navigation.compose.rememberNavController
+import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 import hu.hitgyulekezete.hitradio.audio.VolumeObserver
 import hu.hitgyulekezete.hitradio.audio.controller.AudioController
 import hu.hitgyulekezete.hitradio.audio.controller.AudioStateManager
@@ -21,11 +24,13 @@ import hu.hitgyulekezete.hitradio.model.program.api.ProgramApi
 import hu.hitgyulekezete.hitradio.view.Pages
 import hu.hitgyulekezete.hitradio.view.nowplaying.NowPlayingBar
 import hu.hitgyulekezete.hitradio.view.nowplaying.NowPlayingBarLayout
+import hu.hitgyulekezete.hitradio.view.pages.Layout
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     val audioController: AudioController by lazy {
@@ -89,20 +94,26 @@ class MainActivity : ComponentActivity() {
             val volume = volumeObserver.volume.observeAsState(0.0f)
 
 
-            NowPlayingBar(
-                navController = navController,
+            Layout(
                 audioController = audioController,
                 audioManager = audioManager,
                 volumeObserver = volumeObserver,
-            ) {
-                Pages(
-                    navController = navController,
-                    audioController = audioController,
-                    programApi = programApi,
-                    programRepository = currentProgramRepository,
-                    downloadManager = downloadManager
-                )
-            }
+            )
+
+//            NowPlayingBar(
+//                navController = navController,
+//                audioController = audioController,
+//                audioManager = audioManager,
+//                volumeObserver = volumeObserver,
+//            ) {
+//                Pages(
+//                    navController = navController,
+//                    audioController = audioController,
+//                    programApi = programApi,
+//                    programRepository = currentProgramRepository,
+//                    downloadManager = downloadManager
+//                )
+//            }
         }
     }
 }

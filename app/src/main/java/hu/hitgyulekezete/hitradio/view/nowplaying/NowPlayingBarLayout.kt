@@ -32,11 +32,11 @@ fun NowPlayingBarLayout(
     onSeekTo: (Float) -> Unit,
     onSetVolume: (Float) -> Unit,
     onPlayPausePressed: () -> Unit,
+    swipeableState: SwipeableState<Int> = rememberSwipeableState(0),
     content: @Composable () -> Unit
 ) {
     var layoutHeight by remember { mutableStateOf(1) }
 
-    val swipeableState = rememberSwipeableState(0)
     val sizePx = with(LocalDensity.current) { barHeight.toPx() }
     val anchors = mapOf(layoutHeight.toFloat() - sizePx to 0, 0f to 1)
 
@@ -47,7 +47,7 @@ fun NowPlayingBarLayout(
     val coroutineScope = rememberCoroutineScope()
 
     Box(
-        Modifier
+        modifier
             .fillMaxSize()
             .onGloballyPositioned { coordinates ->
                 layoutHeight = coordinates.size.height
