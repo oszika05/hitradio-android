@@ -15,6 +15,8 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import androidx.core.net.toUri
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,13 +28,26 @@ import hu.hitgyulekezete.hitradio.audio.controller.seekposition.SeekPositionMana
 import hu.hitgyulekezete.hitradio.audio.metadata.Metadata
 import hu.hitgyulekezete.hitradio.audio.metadata.MetadataType
 import hu.hitgyulekezete.hitradio.audio.metadata.source.Source
+import hu.hitgyulekezete.hitradio.audio.metadata.source.asBundle
 import hu.hitgyulekezete.hitradio.audio.metadata.source.url.StreamQuality
 import hu.hitgyulekezete.hitradio.audio.service.MediaPlaybackService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import okhttp3.internal.toLongOrDefault
+import kotlin.coroutines.CoroutineContext
 
 class AudioController(
     private val activity: Activity
-) {
+) : CoroutineScope {
+
+    private val job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+
+
     private var source: Source? = null
     private var mediaBrowser: MediaBrowserCompat? = null
     private var callbackRegistered: Boolean = false
@@ -51,20 +66,14 @@ class AudioController(
         SeekPositionManager(mediaController, handler)
     }
 
-    private val playbackStateMediator = MediatorLiveData<AudioStateManager.PlaybackState>()
-    val playbackState: LiveData<AudioStateManager.PlaybackState> by lazy {
-        playbackStateMediator
-    }
+    private val playbackStateFlow = MutableStateFlow(AudioStateManager.PlaybackState.STOPPED)
+    val playbackState: StateFlow<AudioStateManager.PlaybackState> = playbackStateFlow
 
-    private val metadataMediator = MediatorLiveData<Metadata>()
-    val metadata: LiveData<Metadata> by lazy {
-        metadataMediator
-    }
+    private val metadataFlow = MutableStateFlow<Metadata>(Metadata.from(null))
+    val metadata: StateFlow<Metadata> = metadataFlow
 
-    private val seekPositionMediator = MediatorLiveData<Float?>()
-    val seekPosition: LiveData<Float?> by lazy {
-        seekPositionMediator
-    }
+    private val seekPositionFlow = MutableStateFlow<Float?>(null)
+    val seekPosition: StateFlow<Float?> = seekPositionFlow
 
     fun seekTo(percentage: Float) {
         seekPositionManager.seekTo(percentage)
@@ -74,8 +83,8 @@ class AudioController(
         stateManager.playPause()
     }
 
-    private val _currentMediaId = MutableLiveData<String?>(null)
-    val mediaId: LiveData<String?> = _currentMediaId
+    private val _currentMediaId = MutableStateFlow<String?>(null)
+    val mediaId: StateFlow<String?> = _currentMediaId
 
     private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
@@ -93,19 +102,22 @@ class AudioController(
             seekPositionManager.start()
             stateManager.connect()
 
-            metadataMediator.removeSource(metadataManager.metadata)
-            metadataMediator.addSource(metadataManager.metadata) {
-                metadataMediator.value = it
+            launch {
+                metadataManager.metadata.collect {
+                    metadataFlow.value = it
+                }
             }
 
-            seekPositionMediator.removeSource(seekPositionManager.seekPosition)
-            seekPositionMediator.addSource(seekPositionManager.seekPosition) {
-                seekPositionMediator.value = it
+            launch {
+                seekPositionManager.seekPosition.collect {
+                    seekPositionFlow.value = it
+                }
             }
 
-            playbackStateMediator.removeSource(stateManager.playbackState)
-            playbackStateMediator.addSource(stateManager.playbackState) {
-                playbackStateMediator.value = it
+            launch {
+                stateManager.playbackState.collect {
+                    playbackStateFlow.value = it
+                }
             }
         }
 
@@ -159,17 +171,25 @@ class AudioController(
 //            mediaController.queue.removeAll { true }
 //        }
 
-        mediaController.transportControls.prepareFromMediaId(source.id, Bundle.EMPTY)
+        mediaController.transportControls.prepareFromUri(
+            source.url[quality].toUri(),
+            source.asBundle()
+        )
+//        mediaController.transportControls.prepareFromMediaId(source.id, Bundle.EMPTY)
 //        mediaController.transportControls.playFromMediaId(source.id, Bundle.EMPTY)
 //        mediaController.addQueueItem(source.asMediaDescriptionCompat(quality), 0)
     }
 
     fun connect() {
+        job.start()
+
         mediaBrowser = createMediaBrowser()
         connectIfNeeded()
     }
 
     fun disconnect() {
+        job.cancel()
+
         metadataManager.disconnect()
         seekPositionManager.stop()
         stateManager.disconnect()
@@ -179,12 +199,40 @@ class AudioController(
         callbackRegistered = false
         mediaBrowser?.disconnect()
         mediaBrowser = null
-
     }
 
     private val controllerCallback = object : MediaControllerCompat.Callback() {
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
-            _currentMediaId.postValue(metadata?.description?.mediaId)
+            _currentMediaId.value = metadata?.description?.mediaId
+        }
+    }
+}
+
+fun AudioController.sourcePlaybackState(sourceId: String?): Flow<AudioStateManager.PlaybackState> =
+    flow {
+        playbackState
+            .combine(mediaId) { playbackState, mediaId -> playbackState to mediaId }
+            .collect { (playbackState, mediaId) ->
+                if (sourceId == null) {
+                    emit(AudioStateManager.PlaybackState.STOPPED)
+                }
+                if (mediaId != sourceId) {
+                    emit(AudioStateManager.PlaybackState.STOPPED)
+                } else {
+                    emit(playbackState)
+                }
+            }
+    }
+
+fun AudioController.playPauseForSource(source: Source) {
+    if (mediaId.value == source.id) {
+        playPause()
+    } else {
+        val needToPlay = playbackState.value != AudioStateManager.PlaybackState.BUFFERING && playbackState.value != AudioStateManager.PlaybackState.PLAYING
+        setSource(source)
+
+        if (needToPlay) {
+            playPause()
         }
     }
 }

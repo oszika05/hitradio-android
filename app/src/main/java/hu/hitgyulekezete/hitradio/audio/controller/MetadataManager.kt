@@ -7,18 +7,18 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import hu.hitgyulekezete.hitradio.audio.metadata.Metadata
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class MetadataManager(
     private val controller: MediaControllerCompat
 ) {
-    private val _metadata = MutableLiveData<Metadata>()
-    val metadata: LiveData<Metadata> = _metadata
+    private val _metadata = MutableStateFlow<Metadata>(Metadata.from(null))
+    val metadata: StateFlow<Metadata> = _metadata
 
     private val controllerCallback = object : MediaControllerCompat.Callback() {
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
-            _metadata.postValue(
-                Metadata.from(metadata?.description)
-            )
+            _metadata.value = Metadata.from(metadata?.description)
         }
     }
 

@@ -1,5 +1,6 @@
 package hu.hitgyulekezete.hitradio.view.pages.news
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
@@ -14,10 +15,12 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import hu.hitgyulekezete.hitradio.model.news.News
 
 @Composable
 fun NewsPage(
-    viewModel: NewsPageViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    viewModel: NewsPageViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    onNewsItemClick: (news: News) -> Unit = {}
 ) {
     val search by viewModel.search.collectAsState("")
 
@@ -25,7 +28,9 @@ fun NewsPage(
 
     LazyColumn() {
         item(key = "search") {
-            TextField(value = search, onValueChange = { viewModel.search.compareAndSet(search, it) })
+            TextField(
+                value = search,
+                onValueChange = { viewModel.search.compareAndSet(search, it) })
         }
 
         if (news.loadState.refresh is LoadState.Loading) {
@@ -34,7 +39,16 @@ fun NewsPage(
             }
         } else {
             items(news, key = { it.id }) { newsItem ->
-                Text(newsItem?.title ?: "null", modifier = Modifier.height(165.dp))
+                val news = newsItem ?: return@items
+
+                Text(
+                    newsItem?.title ?: "null",
+                    modifier = Modifier
+                        .height(165.dp)
+                        .clickable {
+                            onNewsItemClick(news)
+                        }
+                )
             }
         }
 

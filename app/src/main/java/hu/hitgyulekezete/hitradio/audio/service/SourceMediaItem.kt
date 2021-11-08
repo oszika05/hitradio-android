@@ -51,27 +51,6 @@ data class SourceMediaItem(
         )
     }
 
-    fun asMediaSource(streamQuality: StreamQuality): MediaSource? {
-        if (source == null) {
-            return null
-        }
-
-        return when (source.metadata.type) {
-            MetadataType.NORMAL -> {
-                val dataSourceFactory: DataSource.Factory = DefaultHttpDataSourceFactory()
-
-                ProgressiveMediaSource.Factory(dataSourceFactory)
-                    .createMediaSource(MediaItem.fromUri(source.url[streamQuality]))
-            }
-            MetadataType.LIVE -> {
-                val dataSourceFactory: DataSource.Factory = DefaultHttpDataSourceFactory()
-
-                ProgressiveMediaSource.Factory(dataSourceFactory)
-                    .createMediaSource(MediaItem.fromUri(source.url[streamQuality]))
-            }
-        }
-    }
-
     fun flattenChildren(): List<SourceMediaItem> {
         return this.children.flatMap { it.flatten() }
     }

@@ -8,17 +8,23 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import hu.hitgyulekezete.hitradio.audio.metadata.Metadata
+import io.ktor.utils.io.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class AudioStateManager(
     private val mediaController: MediaControllerCompat
 ) {
 
-    private val _playbackState = MutableLiveData<PlaybackState>(PlaybackState.STOPPED)
-    val playbackState: LiveData<PlaybackState> = _playbackState
+    private val _playbackState = MutableStateFlow<PlaybackState>(PlaybackState.STOPPED)
+    val playbackState: StateFlow<PlaybackState> = _playbackState
 
     private val controllerCallback = object : MediaControllerCompat.Callback() {
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-            _playbackState.postValue(PlaybackState.fromPlaybackStateCompat(state?.state))
+            _playbackState.value = PlaybackState.fromPlaybackStateCompat(state?.state)
         }
     }
 

@@ -9,7 +9,7 @@ import hu.hitgyulekezete.hitradio.model.programguide.ProgramGuideItem
 class ChangingMetadataSource(
     override val id: String,
     override val name: String,
-    override val description: String,
+    override val description: String?,
     override val url: SourceUrl,
     private val currentProgramRepository: CurrentProgramRepository,
 ) : Source, CurrentProgramRepository.OnChangeListener {

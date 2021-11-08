@@ -39,8 +39,8 @@ fun HomePage(
         return
     }
 
-    val mediaId = audioController.mediaId.observeAsState()
-    val playbackState = audioController.playbackState.observeAsState()
+    val mediaId = audioController.mediaId.collectAsState()
+    val playbackState = audioController.playbackState.collectAsState()
     val onlineRadioPlaybackState =
         if (mediaId.value != LIVE_HITRADIO_ID || playbackState.value == null) {
             AudioStateManager.PlaybackState.STOPPED

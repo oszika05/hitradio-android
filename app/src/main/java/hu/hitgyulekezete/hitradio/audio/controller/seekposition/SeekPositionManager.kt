@@ -7,6 +7,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import hu.hitgyulekezete.hitradio.audio.service.MediaPlaybackService
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import okhttp3.internal.toLongOrDefault
 import kotlin.math.roundToLong
 
@@ -15,8 +17,8 @@ class SeekPositionManager(
     private val mediaController: MediaControllerCompat,
     private val handler: Handler
 ) {
-    private val _seekPosition = MutableLiveData<Float?>(null)
-    val seekPosition: LiveData<Float?> = _seekPosition
+    private val _seekPosition = MutableStateFlow<Float?>(null)
+    val seekPosition: StateFlow<Float?> = _seekPosition
 
     private val positionUpdater = object : Runnable {
         override fun run() {
@@ -25,7 +27,7 @@ class SeekPositionManager(
             val length = mediaController.metadata.getLengthInMs()
 
             if (length == null) {
-                _seekPosition.postValue(null)
+                _seekPosition.value = null
                 return
             }
 
@@ -36,7 +38,7 @@ class SeekPositionManager(
                 seekPercentage = null
             }
 
-            _seekPosition.postValue(seekPercentage)
+            _seekPosition.value = seekPercentage
         }
     }
 

@@ -9,6 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import hu.hitgyulekezete.hitradio.audio.VolumeObserver
@@ -24,7 +25,8 @@ import java.util.*
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    val audioController: AudioController by lazy {
+
+    private val audioController: AudioController by lazy {
         AudioController(this@MainActivity)
     }
 
@@ -54,7 +56,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        GlobalScope.launch {
+        lifecycleScope.launch {
             val programs = programApi.get()
             currentProgramRepository.setPrograms(programs)
             currentProgramRepository.start()
@@ -78,8 +80,8 @@ class MainActivity : ComponentActivity() {
 
             val navController = rememberNavController()
 
-            val metadata = audioController.metadata.observeAsState()
-            val playbackState = audioController.playbackState.observeAsState()
+            val metadata = audioController.metadata.collectAsState()
+            val playbackState = audioController.playbackState.collectAsState()
             val scope = rememberCoroutineScope()
 
             val volume = volumeObserver.volume.observeAsState(0.0f)
@@ -90,21 +92,6 @@ class MainActivity : ComponentActivity() {
                 audioManager = audioManager,
                 volumeObserver = volumeObserver,
             )
-
-//            NowPlayingBar(
-//                navController = navController,
-//                audioController = audioController,
-//                audioManager = audioManager,
-//                volumeObserver = volumeObserver,
-//            ) {
-//                Pages(
-//                    navController = navController,
-//                    audioController = audioController,
-//                    programApi = programApi,
-//                    programRepository = currentProgramRepository,
-//                    downloadManager = downloadManager
-//                )
-//            }
         }
     }
 }

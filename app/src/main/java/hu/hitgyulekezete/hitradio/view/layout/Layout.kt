@@ -2,6 +2,7 @@ package hu.hitgyulekezete.hitradio.view.pages
 
 import android.app.Activity
 import android.media.AudioManager
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.compose.foundation.border
@@ -25,18 +26,22 @@ import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
+import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hu.hitgyulekezete.hitradio.audio.VolumeObserver
 import hu.hitgyulekezete.hitradio.audio.controller.AudioController
+import hu.hitgyulekezete.hitradio.model.news.News
 import hu.hitgyulekezete.hitradio.view.nowplaying.NowPlayingBar
+import hu.hitgyulekezete.hitradio.view.pages.episode.EpisodePage
+import hu.hitgyulekezete.hitradio.view.pages.episodes.EpisodesPage
 import hu.hitgyulekezete.hitradio.view.pages.news.NewsPage
 import hu.hitgyulekezete.hitradio.view.pages.news.NewsPageViewModel
+import hu.hitgyulekezete.hitradio.view.pages.newsitem.NewsItemPage
 import kotlinx.coroutines.launch
 
 private data class BottomNavigationPages(
@@ -129,6 +134,19 @@ fun InnerLayout(
                     }) {
                         Text("go to news")
                     }
+                    Button(onClick = {
+                        navController.navigate("episodes") {
+                            this.restoreState = true
+                            this.launchSingleTop = true
+                        }
+                    }) {
+                        Text("go to episodes")
+                    }
+                    Button(onClick = {
+                        navController.navigate("episodes")
+                    }) {
+                        Text("go to kozeppont episodes")
+                    }
                 }
 
             }
@@ -139,7 +157,59 @@ fun InnerLayout(
                 Text("discover")
             }
             composable("news") { backStack ->
-                NewsPage(viewModel = hiltViewModel(backStack))
+                NewsPage(
+                    viewModel = hiltViewModel(backStack),
+                    onNewsItemClick = { news ->
+                        val newsJson = Gson().toJson(news)
+                        Log.d("ALMA", "news json: $newsJson")
+                        val encodedNewsJson = Uri.encode(newsJson)
+                        Log.d("ALMA", "news encoded json: $encodedNewsJson")
+                        navController.navigate("newsitem/${encodedNewsJson}")
+                    }
+                )
+            }
+            composable("newsitem/{item}") { backStackEntry ->
+                val newsJson = backStackEntry.arguments?.getString("item")
+                Log.d("ALMA", "newsitem raw: $newsJson")
+                val decodedNewsJson = Uri.encode(newsJson)
+                Log.d("ALMA", "newsitem docoded: $decodedNewsJson")
+                val news = Gson().fromJson(newsJson, News::class.java)
+
+                NewsItemPage(news = news)
+            }
+            composable("episodes") { backStack ->
+
+                val programId = backStack.arguments?.get("programId") as String?
+                val initialSearch = backStack.arguments?.get("search") as String?
+
+                EpisodesPage(
+                    viewModel = hiltViewModel(backStack),
+                    audioController = audioController,
+                    initialSearch = initialSearch ?: "",
+                    programId = programId,
+                    onEpisodeClick = { episode ->
+                        navController.navigate("episode/${episode?.id}")
+                    }
+                )
+            }
+            composable("episode/{id}") { backStack ->
+
+                val episodeId = backStack.arguments?.get("id") as String? ?: return@composable
+
+                EpisodePage(
+                    episodeId = episodeId,
+                    audioController = audioController,
+                    viewModel = hiltViewModel(backStack),
+                    onEpisodeClick = { episode ->
+                        navController.navigate("episode/${episode.id}")
+                    },
+                    onPersonClick = {
+
+                    },
+                    onTagClick = {
+
+                    }
+                )
             }
         }
     }
@@ -191,7 +261,10 @@ fun Layout(
             )
         }
     ) { innerPadding ->
-        Box(Modifier.padding(innerPadding).fillMaxSize()) {
+        Box(
+            Modifier
+                .padding(innerPadding)
+                .fillMaxSize()) {
             Box(
                 Modifier
                     .fillMaxSize()

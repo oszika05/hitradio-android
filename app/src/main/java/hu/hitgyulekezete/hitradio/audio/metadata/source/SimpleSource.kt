@@ -6,7 +6,7 @@ import hu.hitgyulekezete.hitradio.audio.metadata.source.url.SourceUrl
 class SimpleSource(
     override val id: String,
     override val name: String,
-    override val description: String,
+    override val description: String?,
     override val metadata: Metadata,
     override val url: SourceUrl
 ) : Source {

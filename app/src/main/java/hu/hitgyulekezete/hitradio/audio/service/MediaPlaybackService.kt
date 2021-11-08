@@ -31,19 +31,28 @@ import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import hu.hitgyulekezete.hitradio.MainActivity
 import hu.hitgyulekezete.hitradio.R
 import android.graphics.BitmapFactory
+import com.google.android.exoplayer2.source.MediaSource
 import hu.hitgyulekezete.hitradio.audio.metadata.artUriOrDefault
+import hu.hitgyulekezete.hitradio.audio.metadata.source.asMediaSource
+import hu.hitgyulekezete.hitradio.audio.metadata.source.asSource
 import hu.hitgyulekezete.hitradio.model.podcast.PodcastProgram
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import hu.hitgyulekezete.hitradio.model.programguide.api.ProgramGuideApi
+import hu.hitgyulekezete.hitradio.model.programguide.current.CurrentProgramRepository
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.asFlow
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlin.coroutines.CoroutineContext
 
 
-class MediaPlaybackService : MediaBrowserServiceCompat() {
+class MediaPlaybackService : MediaBrowserServiceCompat(), CoroutineScope {
+
+    private val job = Job()
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + job
 
     private var mediaSession: MediaSessionCompat? = null
     private lateinit var stateBuilder: PlaybackStateCompat.Builder
@@ -68,8 +77,18 @@ class MediaPlaybackService : MediaBrowserServiceCompat() {
 
     private var streamQuality = StreamQuality.High
 
+    private var currentProgramRepository: CurrentProgramRepository? = null
+
     override fun onCreate() {
         super.onCreate()
+        job.start()
+
+        launch {
+            val programGuideApi = ProgramGuideApi("https://www.hitradio.hu/api/musor_ios.php")
+            val programs = programGuideApi.get()
+            currentProgramRepository = CurrentProgramRepository(programs)
+        }
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create the NotificationChannel
@@ -128,6 +147,7 @@ class MediaPlaybackService : MediaBrowserServiceCompat() {
                     return PlaybackStateCompat.ACTION_PAUSE or
                             PlaybackStateCompat.ACTION_PLAY or
                             PlaybackStateCompat.ACTION_PREPARE_FROM_MEDIA_ID or
+                            PlaybackStateCompat.ACTION_PREPARE_FROM_URI or
                             PlaybackStateCompat.ACTION_STOP
                 }
 
@@ -144,9 +164,9 @@ class MediaPlaybackService : MediaBrowserServiceCompat() {
 
                     val root = getItems()
                     val media = root.findById(mediaId)
-                    val source = media?.asMediaSource(streamQuality) ?: return
+                    val source = media?.source.asMediaSource(streamQuality) ?: return
 
-                    subscribeToMetadata(media)
+                    subscribeToMetadata(media?.source)
 
                     player.setMediaSource(source)
                     player.prepare()
@@ -165,7 +185,24 @@ class MediaPlaybackService : MediaBrowserServiceCompat() {
                 }
 
                 override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) {
+                    // maybe this would be better
+                    // metadata in extras
+
+                    currentProgramRepository ?: return
+
+                    val source = extras.asSource(currentProgramRepository!!) ?: return
+
+                    currentMediaId = source.id
+
+                    subscribeToMetadata(source)
+
+                    player.setMediaSource(source.asMediaSource(streamQuality) ?: return)
+
                     player.prepare()
+
+                    if (playWhenReady) {
+                        player.play()
+                    }
                 }
 
             })
@@ -194,7 +231,7 @@ class MediaPlaybackService : MediaBrowserServiceCompat() {
 
             override fun createCurrentContentIntent(player: Player): PendingIntent? {
                 val intent = Intent(this@MediaPlaybackService, MainActivity::class.java)
-                return PendingIntent.getActivity(this@MediaPlaybackService, 0, intent, 0)
+                return PendingIntent.getActivity(this@MediaPlaybackService, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             }
 
             override fun getCurrentContentText(player: Player): CharSequence? {
@@ -243,18 +280,23 @@ class MediaPlaybackService : MediaBrowserServiceCompat() {
         playerNotificationManager.setPlayer(player)
     }
 
-    private fun subscribeToMetadata(item: SourceMediaItem) {
-        if (item.source == source) {
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
+    }
+
+    private fun subscribeToMetadata(item: Source?) {
+        if (item == source) {
             return
         }
 
-        currentMetadata = item.source?.metadata
+        currentMetadata = item?.metadata
 
         if (observer != null) {
             source?.removeObserver(observer!!)
         }
 
-        if (item.source == null) {
+        if (item == null) {
             return
         }
 
@@ -270,7 +312,7 @@ class MediaPlaybackService : MediaBrowserServiceCompat() {
                 }
             }
         }
-        item.source.observe(observer!!)
+        item.observe(observer!!)
     }
 
     override fun onGetRoot(

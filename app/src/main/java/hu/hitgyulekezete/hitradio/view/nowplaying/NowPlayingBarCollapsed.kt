@@ -83,7 +83,7 @@ fun NowPlayingBarCollapsed(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewNowPlayingBarCollapsed() {
 

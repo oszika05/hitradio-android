@@ -18,8 +18,8 @@ fun PodcastProgramPage(
 ) {
     val podcastRepository = MockPodcastRepository()
 
-    val currentMediaId = audioController.mediaId.observeAsState()
-    val playbackState = audioController.playbackState.observeAsState()
+    val currentMediaId = audioController.mediaId.collectAsState()
+    val playbackState = audioController.playbackState.collectAsState()
 
     var isLoading by remember { mutableStateOf(true) }
     var podcastProgram by remember { mutableStateOf<PodcastProgram?>(null) }

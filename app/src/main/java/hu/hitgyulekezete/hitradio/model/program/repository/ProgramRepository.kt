@@ -77,7 +77,12 @@ class ProgramRepository {
         }
     }
 
-    suspend fun getPeople(from: Int, pageSize: Int, search: String?, type: PersonType?): List<Person> {
+    suspend fun getPeople(
+        from: Int,
+        pageSize: Int,
+        search: String?,
+        type: PersonType?
+    ): List<Person> {
         return try {
             withContext(Dispatchers.IO) {
                 client.get<List<Person>>("${ProgramRepository.endpoint}/person") {
@@ -96,6 +101,17 @@ class ProgramRepository {
         } catch (e: Exception) {
             e.printStackTrace()
             listOf()
+        }
+    }
+
+    suspend fun getEpisode(episodeId: String): Episode? {
+        return try {
+            withContext(Dispatchers.IO) {
+                client.get<Episode?>("${ProgramRepository.endpoint}/episode/$episodeId")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 
