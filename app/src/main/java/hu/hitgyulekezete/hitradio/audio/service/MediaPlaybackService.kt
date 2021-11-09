@@ -23,7 +23,6 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import hu.hitgyulekezete.hitradio.audio.metadata.Metadata
-import hu.hitgyulekezete.hitradio.audio.metadata.source.Source
 import hu.hitgyulekezete.hitradio.audio.metadata.source.url.SourceUrl
 import hu.hitgyulekezete.hitradio.audio.metadata.source.url.StreamQuality
 
@@ -33,8 +32,7 @@ import hu.hitgyulekezete.hitradio.R
 import android.graphics.BitmapFactory
 import com.google.android.exoplayer2.source.MediaSource
 import hu.hitgyulekezete.hitradio.audio.metadata.artUriOrDefault
-import hu.hitgyulekezete.hitradio.audio.metadata.source.asMediaSource
-import hu.hitgyulekezete.hitradio.audio.metadata.source.asSource
+import hu.hitgyulekezete.hitradio.audio.metadata.source.*
 import hu.hitgyulekezete.hitradio.model.podcast.PodcastProgram
 import hu.hitgyulekezete.hitradio.model.programguide.api.ProgramGuideApi
 import hu.hitgyulekezete.hitradio.model.programguide.current.CurrentProgramRepository
@@ -350,7 +348,7 @@ class MediaPlaybackService : MediaBrowserServiceCompat(), CoroutineScope {
     override fun onLoadItem(itemId: String?, result: Result<MediaBrowserCompat.MediaItem>) {
         val root = getItems()
 
-        val element = root.findById(itemId ?: LIVE_HITRADIO_ID)
+        val element = root.findById(itemId ?: ChangingMetadataSource.LIVE_ID)
 
         result.sendResult(element?.asMediaItem(streamQuality))
     }
@@ -383,7 +381,6 @@ class MediaPlaybackService : MediaBrowserServiceCompat(), CoroutineScope {
         private const val LOG_TAG: String = "MediaPlaybackService"
         const val MEDIA_ROOT_ID = "root"
         const val LIVE_ROOT_ID = "LIVE_RADIO"
-        const val LIVE_HITRADIO_ID = "LIVE_HITRADIO"
         const val NOTIFICATION_CHANNEL_ID = "audio"
         const val NOTIFICATION_ID = 874
         private val liveHitradioUrl = SourceUrl(

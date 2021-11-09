@@ -40,6 +40,7 @@ import hu.hitgyulekezete.hitradio.model.news.News
 import hu.hitgyulekezete.hitradio.view.nowplaying.NowPlayingBar
 import hu.hitgyulekezete.hitradio.view.pages.episode.EpisodePage
 import hu.hitgyulekezete.hitradio.view.pages.episodes.EpisodesPage
+import hu.hitgyulekezete.hitradio.view.pages.live.LivePage
 import hu.hitgyulekezete.hitradio.view.pages.news.NewsPage
 import hu.hitgyulekezete.hitradio.view.pages.news.NewsPageViewModel
 import hu.hitgyulekezete.hitradio.view.pages.newsitem.NewsItemPage
@@ -160,8 +161,11 @@ fun InnerLayout(
                 }
 
             }
-            composable("live") {
-                Text("live")
+            composable("live") { backStack ->
+                LivePage(
+                    audioController = audioController,
+                    viewModel = hiltViewModel(backStack)
+                )
             }
             composable("discover") {
                 Text("discover")

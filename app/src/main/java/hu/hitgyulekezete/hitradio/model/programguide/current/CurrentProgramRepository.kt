@@ -1,12 +1,34 @@
 package hu.hitgyulekezete.hitradio.model.programguide.current
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import hu.hitgyulekezete.hitradio.model.programguide.ProgramGuideItem
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import java.util.*
 import kotlin.concurrent.schedule
 
-class CurrentProgramRepository(programs: List<ProgramGuideItem>) {
+class CurrentProgramRepository(
+    programs: List<ProgramGuideItem>,
+    private val defaultProgram: ProgramGuideItem = ProgramGuideItem(
+        id = "",
+        title = "Zenei válogatás",
+        start = Calendar.getInstance().run {
+            add(Calendar.MINUTE, 5)
+            add(Calendar.HOUR, 1)
+            set(Calendar.MINUTE, 0)
+            time
+        },
+        end = Calendar.getInstance().run {
+            add(Calendar.MINUTE, -5)
+            set(Calendar.MINUTE, 0)
+            time
+        },
+        description = "A legjobb kereszény zenék",
+        replay = "",
+    )
+) {
     private var isStarted = false
     private var programs = programs.sortedBy { it.start }
 
@@ -19,6 +41,8 @@ class CurrentProgramRepository(programs: List<ProgramGuideItem>) {
 
     private val _currentProgramLiveData = MutableLiveData<ProgramGuideItem?>(null)
     val currentProgramLiveData: LiveData<ProgramGuideItem?> = _currentProgramLiveData
+    private val _currentOrDefault = MutableStateFlow(defaultProgram)
+    val currentOrDefault: StateFlow<ProgramGuideItem> = _currentOrDefault
 
     private val _nextPrograms = MutableLiveData<List<ProgramGuideItem>>(listOf())
     val nextPrograms: LiveData<List<ProgramGuideItem>> = _nextPrograms
@@ -78,12 +102,32 @@ class CurrentProgramRepository(programs: List<ProgramGuideItem>) {
 
     private fun updateCurrent() {
         val now = Date()
-        _nextPrograms.postValue(getProgramsAfter(now))
+        val nextPrograms = getProgramsAfter(now)
+        _nextPrograms.postValue(nextPrograms)
 
         val current = getCurrent()
 
+        val nextProgramDateStart = nextPrograms.firstOrNull()?.start
+
         currentProgram = current
         _currentProgramLiveData.postValue(current)
+        _currentOrDefault.value = current ?: defaultProgram.copy(
+            start = Calendar.getInstance().run {
+                add(Calendar.MINUTE, 3)
+                set(Calendar.MINUTE, 0)
+                time
+            },
+            end = Calendar.getInstance().run {
+                if (nextProgramDateStart != null) {
+                    time = nextProgramDateStart
+                } else {
+                    add(Calendar.MINUTE, 3)
+                    add(Calendar.HOUR, 1)
+                    set(Calendar.MINUTE, 0)
+                }
+                time
+            },
+        )
 
         for (observer in observers) {
             observer.onCurrentProgramChange(current)

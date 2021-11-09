@@ -10,10 +10,11 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import hu.hitgyulekezete.hitradio.audio.metadata.MetadataType
 import hu.hitgyulekezete.hitradio.audio.metadata.source.ChangingMetadataSource
+import hu.hitgyulekezete.hitradio.audio.metadata.source.LIVE_ID
 import hu.hitgyulekezete.hitradio.audio.metadata.source.Source
+import hu.hitgyulekezete.hitradio.audio.metadata.source.live
 import hu.hitgyulekezete.hitradio.audio.metadata.source.url.SourceUrl
 import hu.hitgyulekezete.hitradio.audio.metadata.source.url.StreamQuality
-import hu.hitgyulekezete.hitradio.audio.service.MediaPlaybackService.Companion.LIVE_HITRADIO_ID
 import hu.hitgyulekezete.hitradio.audio.service.MediaPlaybackService.Companion.MEDIA_ROOT_ID
 import hu.hitgyulekezete.hitradio.model.programguide.ProgramGuideItem
 import hu.hitgyulekezete.hitradio.model.programguide.api.ProgramGuideApi
@@ -79,20 +80,10 @@ data class SourceMediaItem(
         private val currentProgramRepository = CurrentProgramRepository(listOf())
 
         private val live: SourceMediaItem = SourceMediaItem(
-            id = LIVE_HITRADIO_ID,
+            id = ChangingMetadataSource.LIVE_ID,
             name = "Élő adás",
             children = listOf(),
-            source = ChangingMetadataSource(
-                id = LIVE_HITRADIO_ID,
-                name = "Élő adás",
-                description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tincidunt rutrum mi ut congue. Fusce pellentesque venenatis placerat. Phasellus hendrerit nisi est, sit amet feugiat.",
-                url = SourceUrl(
-                    low = "http://stream2.hit.hu:8080/speech",
-                    medium = "http://stream2.hit.hu:8080/low",
-                    high = "http://stream2.hit.hu:8080/high",
-                ),
-                currentProgramRepository = currentProgramRepository
-            )
+            source = ChangingMetadataSource.live(currentProgramRepository),
         )
 
         private var programs: List<ProgramGuideItem> = listOf()

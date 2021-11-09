@@ -7,8 +7,9 @@ import androidx.navigation.NavHostController
 import hu.hitgyulekezete.hitradio.audio.controller.AudioController
 import hu.hitgyulekezete.hitradio.audio.controller.AudioStateManager
 import hu.hitgyulekezete.hitradio.audio.metadata.source.ChangingMetadataSource
+import hu.hitgyulekezete.hitradio.audio.metadata.source.LIVE_ID
+import hu.hitgyulekezete.hitradio.audio.metadata.source.live
 import hu.hitgyulekezete.hitradio.audio.metadata.source.url.SourceUrl
-import hu.hitgyulekezete.hitradio.audio.service.MediaPlaybackService.Companion.LIVE_HITRADIO_ID
 import hu.hitgyulekezete.hitradio.model.podcast.PodcastProgram
 import hu.hitgyulekezete.hitradio.model.podcast.repository.MockPodcastRepository
 import hu.hitgyulekezete.hitradio.model.programguide.current.CurrentProgramRepository
@@ -42,7 +43,7 @@ fun HomePage(
     val mediaId = audioController.mediaId.collectAsState()
     val playbackState = audioController.playbackState.collectAsState()
     val onlineRadioPlaybackState =
-        if (mediaId.value != LIVE_HITRADIO_ID || playbackState.value == null) {
+        if (mediaId.value != ChangingMetadataSource.LIVE_ID || playbackState.value == null) {
             AudioStateManager.PlaybackState.STOPPED
         } else {
             playbackState.value!!
@@ -52,19 +53,9 @@ fun HomePage(
         OnlineRadio(
             playbackState = onlineRadioPlaybackState,
             onPlayPause = {
-                if (mediaId.value != LIVE_HITRADIO_ID) {
+                if (mediaId.value != ChangingMetadataSource.LIVE_ID) {
                     audioController.setSource(
-                        ChangingMetadataSource(
-                            id = LIVE_HITRADIO_ID,
-                            name = "Hit rádió",
-                            description = "Élő adás",
-                            url = SourceUrl(
-                                low = "http://stream2.hit.hu:8080/speech",
-                                medium = "http://stream2.hit.hu:8080/low",
-                                high = "http://stream2.hit.hu:8080/high"
-                            ),
-                            currentProgramRepository = programRepository
-                        )
+                        ChangingMetadataSource.live(programRepository)
                     )
 
                     if (playbackState.value?.isPlaying() != true) {
