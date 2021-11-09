@@ -5,6 +5,7 @@ import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +43,9 @@ import hu.hitgyulekezete.hitradio.view.pages.episodes.EpisodesPage
 import hu.hitgyulekezete.hitradio.view.pages.news.NewsPage
 import hu.hitgyulekezete.hitradio.view.pages.news.NewsPageViewModel
 import hu.hitgyulekezete.hitradio.view.pages.newsitem.NewsItemPage
+import hu.hitgyulekezete.hitradio.view.pages.people.PeoplePage
+import hu.hitgyulekezete.hitradio.view.pages.person.PersonPage
+import hu.hitgyulekezete.hitradio.view.pages.program.ProgramPage
 import kotlinx.coroutines.launch
 
 private data class BottomNavigationPages(
@@ -106,6 +110,7 @@ private fun BottomBar(
     }
 }
 
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
 fun InnerLayout(
@@ -143,9 +148,14 @@ fun InnerLayout(
                         Text("go to episodes")
                     }
                     Button(onClick = {
-                        navController.navigate("episodes")
+                        navController.navigate("program/kozeppont")
                     }) {
-                        Text("go to kozeppont episodes")
+                        Text("go to kozeppont")
+                    }
+                    Button(onClick = {
+                        navController.navigate("people")
+                    }) {
+                        Text("go to people")
                     }
                 }
 
@@ -211,11 +221,44 @@ fun InnerLayout(
                     }
                 )
             }
+            composable("program/{id}") { backStack ->
+
+                val programId = backStack.arguments?.get("id") as String? ?: return@composable
+
+                ProgramPage(
+                    programId = programId,
+                    audioController = audioController,
+                    onEpisodeClick = { episode ->
+                        navController.navigate("episode/${episode.id}")
+                    },
+                )
+            }
+            composable("people") { backStack ->
+                PeoplePage(
+                    viewModel = hiltViewModel(backStack),
+                    onPersonClick = { person ->
+                        navController.navigate("person/${person.id}")
+                    }
+                )
+            }
+            composable("person/{id}") { backStack ->
+                val personId = backStack.arguments?.get("id") as String? ?: return@composable
+
+                PersonPage(
+                    personId = personId,
+                    viewModel = hiltViewModel(backStack),
+                    onEpisodeClick = { episode ->
+                        navController.navigate("episode/${episode.id}")
+                    }
+                )
+
+            }
         }
     }
 
 }
 
+@ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
 fun Layout(

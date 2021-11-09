@@ -1,5 +1,7 @@
 package hu.hitgyulekezete.hitradio.model.program.repository
 
+import android.util.Log
+import com.google.gson.Gson
 import hu.hitgyulekezete.hitradio.model.news.News
 import hu.hitgyulekezete.hitradio.model.news.NewsRepository
 import hu.hitgyulekezete.hitradio.model.program.Episode
@@ -19,6 +21,17 @@ class ProgramRepository {
     private val client = HttpClient(OkHttp) {
         install(JsonFeature) {
             serializer = GsonSerializer()
+        }
+    }
+
+    suspend fun getProgram(id: String): Program? {
+        return try {
+            withContext(Dispatchers.IO) {
+                client.get<Program?>("${ProgramRepository.endpoint}/program/$id")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 
@@ -67,7 +80,9 @@ class ProgramRepository {
                     }
 
                     if (people.isNotEmpty()) {
-                        parameter("person", people)
+                        for(person in people) {
+                            parameter("person", person)
+                        }
                     }
                 }
             }
@@ -101,6 +116,17 @@ class ProgramRepository {
         } catch (e: Exception) {
             e.printStackTrace()
             listOf()
+        }
+    }
+
+    suspend fun getPerson(personId: String): Person? {
+        return try {
+            withContext(Dispatchers.IO) {
+                client.get<Person?>("${ProgramRepository.endpoint}/person/$personId")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 
