@@ -19,14 +19,14 @@ class PeoplePageViewModel @Inject constructor(
     private val programRepository: ProgramRepository,
 ): ViewModel() {
 
-    val search = MutableStateFlow<String>("")
+    val search = MutableStateFlow<String?>(null)
 
     val guests = search.flatMapLatest { search ->
-        if (search.isNotEmpty()) {
+        if (search?.isNotBlank() == true) {
             delay(300L)
         }
 
-        val q = if (search.isBlank()) null else search
+        val q = if (search?.isNotBlank() != true) null else search
 
         Pager(PagingConfig(20)) {
             PersonPagingSource(programRepository, q, type = PersonType.Guest)
@@ -34,11 +34,11 @@ class PeoplePageViewModel @Inject constructor(
     }.cachedIn(viewModelScope)
 
     val hosts = search.flatMapLatest { search ->
-        if (search.isNotEmpty()) {
+        if (search?.isNotBlank() == true) {
             delay(300L)
         }
 
-        val q = if (search.isBlank()) null else search
+        val q = if (search?.isNotBlank() != true) null else search
 
         Pager(PagingConfig(20)) {
             PersonPagingSource(programRepository, q, type = PersonType.Host)

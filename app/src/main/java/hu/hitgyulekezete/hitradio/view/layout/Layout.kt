@@ -38,6 +38,7 @@ import hu.hitgyulekezete.hitradio.audio.VolumeObserver
 import hu.hitgyulekezete.hitradio.audio.controller.AudioController
 import hu.hitgyulekezete.hitradio.model.news.News
 import hu.hitgyulekezete.hitradio.view.nowplaying.NowPlayingBar
+import hu.hitgyulekezete.hitradio.view.pages.discover.DiscoverPage
 import hu.hitgyulekezete.hitradio.view.pages.episode.EpisodePage
 import hu.hitgyulekezete.hitradio.view.pages.episodes.EpisodesPage
 import hu.hitgyulekezete.hitradio.view.pages.live.LivePage
@@ -47,6 +48,7 @@ import hu.hitgyulekezete.hitradio.view.pages.newsitem.NewsItemPage
 import hu.hitgyulekezete.hitradio.view.pages.people.PeoplePage
 import hu.hitgyulekezete.hitradio.view.pages.person.PersonPage
 import hu.hitgyulekezete.hitradio.view.pages.program.ProgramPage
+import hu.hitgyulekezete.hitradio.view.pages.programs.ProgramsPage
 import kotlinx.coroutines.launch
 
 private data class BottomNavigationPages(
@@ -167,8 +169,25 @@ fun InnerLayout(
                     viewModel = hiltViewModel(backStack)
                 )
             }
-            composable("discover") {
-                Text("discover")
+            composable("discover") { backStack ->
+                DiscoverPage(
+                    viewModel = hiltViewModel(backStack),
+                    onAllProgramsClick = { search ->
+                        navController.navigate("programs?search=${search}")
+                    },
+                    onProgramClick = { program ->
+                        navController.navigate("program/${program.id}")
+                    },
+                    onAllPeopleClick = { search ->
+                        navController.navigate("people?search=${search}")
+                    },
+                    onPersonClick = { person ->
+                        navController.navigate("person/${person.id}")
+                    },
+                    onEpisodeClick = { episode ->
+                        navController.navigate("episode/${episode.id}")
+                    }
+                )
             }
             composable("news") { backStack ->
                 NewsPage(
@@ -237,8 +256,11 @@ fun InnerLayout(
                     },
                 )
             }
-            composable("people") { backStack ->
+            composable("people?search={search}") { backStack ->
+                val search = backStack.arguments?.get("search") as String?
+
                 PeoplePage(
+                    search = search,
                     viewModel = hiltViewModel(backStack),
                     onPersonClick = { person ->
                         navController.navigate("person/${person.id}")
@@ -256,6 +278,17 @@ fun InnerLayout(
                     }
                 )
 
+            }
+            composable("programs?search={search}") { backStack ->
+                val search = backStack.arguments?.get("search") as String?
+
+                ProgramsPage(
+                    search = search,
+                    viewModel = hiltViewModel(backStack),
+                    onProgramClick = { program ->
+                        navController.navigate("program/${program.id}")
+                    }
+                )
             }
         }
     }

@@ -23,9 +23,14 @@ import hu.hitgyulekezete.hitradio.model.program.Person
 @ExperimentalFoundationApi
 @Composable
 fun PeoplePage(
+    search: String? = null,
     viewModel: PeoplePageViewModel = hiltViewModel(),
     onPersonClick: (Person) -> Unit = {}
 ) {
+    LaunchedEffect(search) {
+        viewModel.search.value = search
+    }
+
     val hosts = viewModel.hosts.collectAsLazyPagingItems()
     val guests = viewModel.guests.collectAsLazyPagingItems()
 
