@@ -37,6 +37,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import hu.hitgyulekezete.hitradio.audio.VolumeObserver
 import hu.hitgyulekezete.hitradio.audio.controller.AudioController
 import hu.hitgyulekezete.hitradio.model.news.News
+import hu.hitgyulekezete.hitradio.view.layout.HitradioTheme
 import hu.hitgyulekezete.hitradio.view.nowplaying.NowPlayingBar
 import hu.hitgyulekezete.hitradio.view.pages.discover.DiscoverPage
 import hu.hitgyulekezete.hitradio.view.pages.episode.EpisodePage
@@ -130,7 +131,11 @@ fun InnerLayout(
         volumeObserver = volumeObserver,
         swipeableState = nowPlayingBarSwipeableState,
     ) {
-        NavHost(navController = navController, startDestination = startDestination, Modifier.fillMaxSize()) {
+        NavHost(
+            navController = navController,
+            startDestination = startDestination,
+            Modifier.fillMaxSize()
+        ) {
             composable("home") {
                 Column {
                     Text("home")
@@ -326,68 +331,71 @@ fun Layout(
     val scope = rememberCoroutineScope()
 
 
-    Scaffold(
-        bottomBar = {
-            BottomBar(
-                routes = bottomNavigationItems,
-                currentRoute = currentRoute,
-                setCurrentRoute = {
-                    scope.launch {
-                        nowPlayingBarSwipeableState.animateTo(0)
-                    }
-                    currentRoute = it
-                },
-                navControllers = navControllers,
-            )
-        }
-    ) { innerPadding ->
-        Box(
-            Modifier
-                .padding(innerPadding)
-                .fillMaxSize()) {
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .alpha(if (currentRoute.key == BottomNavigationPages.Home.key) 1f else 0f)
-            ) {
-                InnerLayout(
-                    startDestination = BottomNavigationPages.Home.key,
-                    navController = homeNavController,
-                    audioController = audioController,
-                    audioManager = audioManager,
-                    volumeObserver = volumeObserver,
-                    nowPlayingBarSwipeableState = nowPlayingBarSwipeableState,
+    HitradioTheme {
+        Scaffold(
+            bottomBar = {
+                BottomBar(
+                    routes = bottomNavigationItems,
+                    currentRoute = currentRoute,
+                    setCurrentRoute = {
+                        scope.launch {
+                            nowPlayingBarSwipeableState.animateTo(0)
+                        }
+                        currentRoute = it
+                    },
+                    navControllers = navControllers,
                 )
             }
-
+        ) { innerPadding ->
             Box(
                 Modifier
+                    .padding(innerPadding)
                     .fillMaxSize()
-                    .alpha(if (currentRoute.key == BottomNavigationPages.Live.key) 1f else 0f)
             ) {
-                InnerLayout(
-                    startDestination = BottomNavigationPages.Live.key,
-                    navController = liveNavController,
-                    audioController = audioController,
-                    audioManager = audioManager,
-                    volumeObserver = volumeObserver,
-                    nowPlayingBarSwipeableState = nowPlayingBarSwipeableState,
-                )
-            }
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .alpha(if (currentRoute.key == BottomNavigationPages.Home.key) 1f else 0f)
+                ) {
+                    InnerLayout(
+                        startDestination = BottomNavigationPages.Home.key,
+                        navController = homeNavController,
+                        audioController = audioController,
+                        audioManager = audioManager,
+                        volumeObserver = volumeObserver,
+                        nowPlayingBarSwipeableState = nowPlayingBarSwipeableState,
+                    )
+                }
 
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .alpha(if (currentRoute.key == BottomNavigationPages.Discover.key) 1f else 0f)
-            ) {
-                InnerLayout(
-                    startDestination = BottomNavigationPages.Discover.key,
-                    navController = discoverNavController,
-                    audioController = audioController,
-                    audioManager = audioManager,
-                    volumeObserver = volumeObserver,
-                    nowPlayingBarSwipeableState = nowPlayingBarSwipeableState,
-                )
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .alpha(if (currentRoute.key == BottomNavigationPages.Live.key) 1f else 0f)
+                ) {
+                    InnerLayout(
+                        startDestination = BottomNavigationPages.Live.key,
+                        navController = liveNavController,
+                        audioController = audioController,
+                        audioManager = audioManager,
+                        volumeObserver = volumeObserver,
+                        nowPlayingBarSwipeableState = nowPlayingBarSwipeableState,
+                    )
+                }
+
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .alpha(if (currentRoute.key == BottomNavigationPages.Discover.key) 1f else 0f)
+                ) {
+                    InnerLayout(
+                        startDestination = BottomNavigationPages.Discover.key,
+                        navController = discoverNavController,
+                        audioController = audioController,
+                        audioManager = audioManager,
+                        volumeObserver = volumeObserver,
+                        nowPlayingBarSwipeableState = nowPlayingBarSwipeableState,
+                    )
+                }
             }
         }
     }
