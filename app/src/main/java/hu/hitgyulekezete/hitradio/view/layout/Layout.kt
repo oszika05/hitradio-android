@@ -5,6 +5,7 @@ import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -352,49 +353,54 @@ fun Layout(
                     .padding(innerPadding)
                     .fillMaxSize()
             ) {
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .alpha(if (currentRoute.key == BottomNavigationPages.Home.key) 1f else 0f)
-                ) {
-                    InnerLayout(
-                        startDestination = BottomNavigationPages.Home.key,
-                        navController = homeNavController,
-                        audioController = audioController,
-                        audioManager = audioManager,
-                        volumeObserver = volumeObserver,
-                        nowPlayingBarSwipeableState = nowPlayingBarSwipeableState,
-                    )
-                }
-
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .alpha(if (currentRoute.key == BottomNavigationPages.Live.key) 1f else 0f)
-                ) {
-                    InnerLayout(
-                        startDestination = BottomNavigationPages.Live.key,
-                        navController = liveNavController,
-                        audioController = audioController,
-                        audioManager = audioManager,
-                        volumeObserver = volumeObserver,
-                        nowPlayingBarSwipeableState = nowPlayingBarSwipeableState,
-                    )
-                }
-
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .alpha(if (currentRoute.key == BottomNavigationPages.Discover.key) 1f else 0f)
-                ) {
-                    InnerLayout(
-                        startDestination = BottomNavigationPages.Discover.key,
-                        navController = discoverNavController,
-                        audioController = audioController,
-                        audioManager = audioManager,
-                        volumeObserver = volumeObserver,
-                        nowPlayingBarSwipeableState = nowPlayingBarSwipeableState,
-                    )
+                Crossfade(currentRoute.key) { current ->
+                    when (current) {
+                        BottomNavigationPages.Home.key -> {
+                            Box(
+                                Modifier
+                                    .fillMaxSize()
+                            ) {
+                                InnerLayout(
+                                    startDestination = BottomNavigationPages.Home.key,
+                                    navController = homeNavController,
+                                    audioController = audioController,
+                                    audioManager = audioManager,
+                                    volumeObserver = volumeObserver,
+                                    nowPlayingBarSwipeableState = nowPlayingBarSwipeableState,
+                                )
+                            }
+                        }
+                        BottomNavigationPages.Live.key -> {
+                            Box(
+                                Modifier
+                                    .fillMaxSize()
+                            ) {
+                                InnerLayout(
+                                    startDestination = BottomNavigationPages.Live.key,
+                                    navController = liveNavController,
+                                    audioController = audioController,
+                                    audioManager = audioManager,
+                                    volumeObserver = volumeObserver,
+                                    nowPlayingBarSwipeableState = nowPlayingBarSwipeableState,
+                                )
+                            }
+                        }
+                        BottomNavigationPages.Discover.key -> {
+                            Box(
+                                Modifier
+                                    .fillMaxSize()
+                            ) {
+                                InnerLayout(
+                                    startDestination = BottomNavigationPages.Discover.key,
+                                    navController = discoverNavController,
+                                    audioController = audioController,
+                                    audioManager = audioManager,
+                                    volumeObserver = volumeObserver,
+                                    nowPlayingBarSwipeableState = nowPlayingBarSwipeableState,
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }

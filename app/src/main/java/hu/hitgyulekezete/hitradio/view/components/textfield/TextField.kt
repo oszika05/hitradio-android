@@ -22,7 +22,7 @@ fun TextField(
     label: String? = null,
     modifier: Modifier = Modifier,
 ) {
-    Column() {
+    Column(modifier = modifier) {
         var isFocused by remember { mutableStateOf(false) }
 
         val color = if (isFocused) {
@@ -37,6 +37,7 @@ fun TextField(
         }
         Box(
             Modifier
+                .fillMaxSize()
                 .border(
                     width = 1.dp,
                     color = color,
@@ -48,7 +49,8 @@ fun TextField(
                 value = value,
                 onValueChange = onValueChange,
                 textStyle = MaterialTheme.typography.body1,
-                modifier = modifier
+                modifier = Modifier
+                    .fillMaxSize()
                     .onFocusChanged {
                         isFocused = it.isFocused
                     },

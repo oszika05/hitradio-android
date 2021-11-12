@@ -2,10 +2,10 @@ package hu.hitgyulekezete.hitradio.view.pages.news
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -16,6 +16,8 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import hu.hitgyulekezete.hitradio.model.news.News
+import hu.hitgyulekezete.hitradio.view.components.news.newscard.NewsCard
+import hu.hitgyulekezete.hitradio.view.components.textfield.TextField
 
 @Composable
 fun NewsPage(
@@ -28,9 +30,13 @@ fun NewsPage(
 
     LazyColumn() {
         item(key = "search") {
+
             TextField(
                 value = search,
-                onValueChange = { viewModel.search.compareAndSet(search, it) })
+                onValueChange = { viewModel.search.compareAndSet(search, it) },
+                label = "Keresés",
+                modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp)
+            )
         }
 
         if (news.loadState.refresh is LoadState.Loading) {
@@ -41,13 +47,10 @@ fun NewsPage(
             items(news, key = { it.id }) { newsItem ->
                 val news = newsItem ?: return@items
 
-                Text(
-                    newsItem?.title ?: "null",
-                    modifier = Modifier
-                        .height(165.dp)
-                        .clickable {
-                            onNewsItemClick(news)
-                        }
+                NewsCard(
+                    news,
+                    onClick = { onNewsItemClick(news) },
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
             }
         }
