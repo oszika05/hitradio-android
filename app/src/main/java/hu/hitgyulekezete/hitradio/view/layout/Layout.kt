@@ -178,6 +178,7 @@ fun InnerLayout(
             composable("discover") { backStack ->
                 DiscoverPage(
                     viewModel = hiltViewModel(backStack),
+                    audioController = audioController,
                     onAllProgramsClick = { search ->
                         navController.navigate("programs?search=${search}")
                     },

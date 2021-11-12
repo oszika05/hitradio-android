@@ -5,6 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.painter.Painter
 import hu.hitgyulekezete.hitradio.view.components.button.variants.PrimaryButton
+import hu.hitgyulekezete.hitradio.view.components.button.variants.SecondaryButton
+import hu.hitgyulekezete.hitradio.view.components.button.variants.TernaryButton
 
 enum class ButtonVariant {
     Primary,
@@ -29,14 +31,14 @@ fun Button(
             modifier = modifier,
             onClick = onClick,
         )
-        ButtonVariant.Secondary -> PrimaryButton(
+        ButtonVariant.Secondary -> SecondaryButton(
             text = text,
             leftIcon = leftIcon,
             rightIcon = rightIcon,
             modifier = modifier,
             onClick = onClick,
         )
-        ButtonVariant.Ternary -> PrimaryButton(
+        ButtonVariant.Ternary -> TernaryButton(
             text = text,
             leftIcon = leftIcon,
             rightIcon = rightIcon,

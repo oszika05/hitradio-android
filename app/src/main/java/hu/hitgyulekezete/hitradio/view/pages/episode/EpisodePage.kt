@@ -24,6 +24,7 @@ import hu.hitgyulekezete.hitradio.model.program.Episode
 import hu.hitgyulekezete.hitradio.model.program.Person
 import hu.hitgyulekezete.hitradio.model.program.asSource
 import hu.hitgyulekezete.hitradio.view.PlayPauseButton
+import hu.hitgyulekezete.hitradio.view.components.tag.Tag
 
 @Composable
 fun EpisodePage(
@@ -66,14 +67,8 @@ fun EpisodePage(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 episode.tags.forEach { tag ->
-                    Card(
-                        shape = RoundedCornerShape(percent = 50),
-                        backgroundColor = MaterialTheme.colors.surface,
-                        modifier = Modifier.clickable {
-                            onTagClick(tag)
-                        }
-                    ) {
-                        Text(tag, Modifier.padding(4.dp))
+                    Tag(tag) {
+                        onTagClick(tag)
                     }
                 }
             }
