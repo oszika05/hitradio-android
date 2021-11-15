@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import hu.hitgyulekezete.hitradio.model.news.News
 import hu.hitgyulekezete.hitradio.view.common.preview.PreviewContainer
+import hu.hitgyulekezete.hitradio.view.components.listitem.ListItem
 import java.util.*
 
 @Composable
@@ -27,47 +28,28 @@ fun NewsCard(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
-    Card(
-        modifier = modifier
-            .clickable { onClick() },
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Column(
-            Modifier.fillMaxWidth()
-        ) {
-            Image(
-                rememberImagePainter(item.picture),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1.7f),
-                contentScale = ContentScale.Crop,
-            )
-
-            Text(
-                item.title,
-                color = MaterialTheme.colors.onSurface,
-                style = MaterialTheme.typography.h3,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .padding(horizontal = 12.dp, vertical = 12.dp)
-            )
-        }
-    }
+    ListItem(
+        modifier = modifier,
+        image = rememberImagePainter(item.picture),
+        contentDescription = item.title,
+        title = item.title,
+        onClick = onClick,
+    )
 }
 
 @Preview
 @Composable
 fun Preview_NewsCard() {
     PreviewContainer {
-        NewsCard(item = News(
-            id = "1",
-            title = "Test news ".repeat(4),
-            picture = "https://www.netafimindia.com/48d5e8/globalassets/demo/potato/potatoes_challenge.jpg?height=0&width=750&mode=crop&quality=80",
-            date = Date(),
-            tags = listOf(),
-            content = "",
-        ))
+        NewsCard(
+            item = News(
+                id = "1",
+                title = "Test news ".repeat(4),
+                picture = "https://www.netafimindia.com/48d5e8/globalassets/demo/potato/potatoes_challenge.jpg?height=0&width=750&mode=crop&quality=80",
+                date = Date(),
+                tags = listOf(),
+                content = "",
+            )
+        )
     }
 }

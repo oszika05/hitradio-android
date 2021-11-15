@@ -22,18 +22,27 @@ val Colors.info: Color
 val Colors.warning: Color
     @Composable get() = if (isLight) Color(0xffffad42) else Color(0xffffad42)
 
+val Colors.shadow: Color
+    @Composable get() = if (isLight) Color(0x20000000) else Color(0x00000000)
+
+val Colors.primaryText: Color
+    @Composable get() = if (isLight) Color(0xff000000) else Color(0xff000000)
+
+val Colors.secondaryText: Color
+    @Composable get() = if (isLight) Color(0xff737373) else Color(0xff737373)
+
 private val LightColors = lightColors(
     primary = Color(0xff42a5f5),
     primaryVariant = Color(0xff0077c2),
     secondary = Color(0xff7e57c2),
     secondaryVariant = Color(0xffb085f5),
-    background = Color(0xfff5f5f6),
+    background = Color(0xffE5E5E5),
     surface = Color(0xffffffff),
     error = Color(0xffff6f60),
     onPrimary = Color(0xff000000),
     onSecondary = Color(0xffffffff),
     onBackground = Color(0xff000000),
-    onSurface = Color(0xff000000),
+    onSurface = Color(0xff202039),
     onError = Color(0xff000000),
 )
 
@@ -42,8 +51,8 @@ private val DarkColors = darkColors(
     primaryVariant = Color(0xff0077c2),
     secondary = Color(0xff7e57c2),
     secondaryVariant = Color(0xffb085f5),
-    background = Color(0xff212529),
-    surface = Color(0xff343a40),
+    background = Color(0xffE5E5E5),
+    surface = Color(0xffffffff),
     error = Color(0xffff6f60),
     onPrimary = Color(0xffffffff),
     onSecondary = Color(0xffc9ced3),
@@ -54,20 +63,24 @@ private val DarkColors = darkColors(
 
 private val typography = Typography(
     h1 = TextStyle(
-        fontSize = 28.sp,
-        fontWeight = FontWeight.SemiBold,
+        fontSize = 34.sp,
+        fontWeight = FontWeight.Bold,
     ),
     h2 = TextStyle(
-        fontSize = 25.sp,
-        fontWeight = FontWeight.SemiBold,
+        fontSize = 22.sp,
+        fontWeight = FontWeight.Bold,
     ),
     h3 = TextStyle(
         fontSize = 20.sp,
         fontWeight = FontWeight.Medium,
     ),
     subtitle1 = TextStyle(
-        fontSize = 18.sp,
-        fontWeight = FontWeight.SemiBold,
+        fontSize = 17.sp,
+        fontWeight = FontWeight.Normal,
+    ),
+    subtitle2 = TextStyle(
+        fontSize = 13.sp,
+        fontWeight = FontWeight.Normal,
     ),
     caption = TextStyle(
         fontSize = 13.sp,

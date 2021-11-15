@@ -152,6 +152,7 @@ fun DiscoverPage(
             EpisodeCard(
                 episode = episode,
                 playbackState = playbackState,
+//                playbackState = AudioStateManager.PlaybackState.STOPPED,
                 onClick = {
                     onEpisodeClick(episode)
                 },

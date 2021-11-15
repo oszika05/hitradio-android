@@ -137,36 +137,58 @@ fun InnerLayout(
             startDestination = startDestination,
             Modifier.fillMaxSize()
         ) {
-            composable("home") {
-                Column {
-                    Text("home")
-                    Button(onClick = {
-                        navController.navigate("news") {
-                            this.restoreState = true
-                            this.launchSingleTop = true
-                        }
-                    }) {
-                        Text("go to news")
-                    }
-                    Button(onClick = {
-                        navController.navigate("episodes") {
-                            this.restoreState = true
-                            this.launchSingleTop = true
-                        }
-                    }) {
-                        Text("go to episodes")
-                    }
-                    Button(onClick = {
-                        navController.navigate("program/kozeppont")
-                    }) {
-                        Text("go to kozeppont")
-                    }
-                    Button(onClick = {
+            composable("home") { backStack ->
+                hu.hitgyulekezete.hitradio.view.pages.home.HomePage(
+                    audioController = audioController,
+                    viewModel = hiltViewModel(backStack),
+                    onNavigateToEpisodesPage = {
+                        navController.navigate("episodes")
+                    },
+                    onNavigateToEpisode = { episode ->
+                        navController.navigate("episode/${episode.id}")
+                    },
+                    onNavigateToNewsPage = {
+                        navController.navigate("news")
+                    },
+                    onNavigateToNewsItem = { news ->
+                        navController.navigate("newsitem/${news.id}")
+                    },
+                    onNavigateToPeoplePage = {
                         navController.navigate("people")
-                    }) {
-                        Text("go to people")
+                    },
+                    onNavigateToPerson = { person ->
+                        navController.navigate("person/${person.id}")
                     }
-                }
+                )
+//                Column {
+//                    Text("home")
+//                    Button(onClick = {
+//                        navController.navigate("news") {
+//                            this.restoreState = true
+//                            this.launchSingleTop = true
+//                        }
+//                    }) {
+//                        Text("go to news")
+//                    }
+//                    Button(onClick = {
+//                        navController.navigate("episodes") {
+//                            this.restoreState = true
+//                            this.launchSingleTop = true
+//                        }
+//                    }) {
+//                        Text("go to episodes")
+//                    }
+//                    Button(onClick = {
+//                        navController.navigate("program/kozeppont")
+//                    }) {
+//                        Text("go to kozeppont")
+//                    }
+//                    Button(onClick = {
+//                        navController.navigate("people")
+//                    }) {
+//                        Text("go to people")
+//                    }
+//                }
 
             }
             composable("live") { backStack ->
@@ -200,22 +222,14 @@ fun InnerLayout(
                 NewsPage(
                     viewModel = hiltViewModel(backStack),
                     onNewsItemClick = { news ->
-                        val newsJson = Gson().toJson(news)
-                        Log.d("ALMA", "news json: $newsJson")
-                        val encodedNewsJson = Uri.encode(newsJson)
-                        Log.d("ALMA", "news encoded json: $encodedNewsJson")
-                        navController.navigate("newsitem/${encodedNewsJson}")
+                        navController.navigate("newsitem/${news.id}")
                     }
                 )
             }
             composable("newsitem/{item}") { backStackEntry ->
-                val newsJson = backStackEntry.arguments?.getString("item")
-                Log.d("ALMA", "newsitem raw: $newsJson")
-                val decodedNewsJson = Uri.encode(newsJson)
-                Log.d("ALMA", "newsitem docoded: $decodedNewsJson")
-                val news = Gson().fromJson(newsJson, News::class.java)
+                val id = backStackEntry.arguments?.getString("item") ?: return@composable
 
-                NewsItemPage(news = news)
+                NewsItemPage(newsId = id)
             }
             composable("episodes") { backStack ->
 

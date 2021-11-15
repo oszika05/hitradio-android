@@ -11,37 +11,50 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import hu.hitgyulekezete.hitradio.model.news.News
 import hu.hitgyulekezete.hitradio.view.components.tag.Tag
 import java.util.*
 
 @Composable
 fun NewsItemPage(
-    news: News
+    newsId: String,
+    viewModel: NewsItemPageViewModel = hiltViewModel(),
 ) {
+    LaunchedEffect(newsId) {
+        viewModel.newsId.value = newsId
+    }
+
     val scrollState = rememberScrollState()
 
-    Column(
-        Modifier
-            .verticalScroll(scrollState)
-    ) {
-        Text(news.title, Modifier.padding(bottom = 32.dp), style = MaterialTheme.typography.h4)
-        if (news.tags.isNotEmpty()) {
-            Row(
-                Modifier
-                    .horizontalScroll(rememberScrollState())
-            ) {
-                news.tags.forEach { tag ->
-                    Tag(text = tag)
+    val news by viewModel.news.collectAsState(null)
+
+    news?.let { news ->
+        Column(
+            Modifier
+                .verticalScroll(scrollState)
+        ) {
+            Text(news.title, Modifier.padding(bottom = 32.dp), style = MaterialTheme.typography.h4)
+            if (news.tags.isNotEmpty()) {
+                Row(
+                    Modifier
+                        .horizontalScroll(rememberScrollState())
+                ) {
+                    news.tags.forEach { tag ->
+                        Tag(text = tag)
+                    }
                 }
+
             }
 
+            Text(news.content, style = MaterialTheme.typography.body1)
         }
-
-        Text(news.content, style = MaterialTheme.typography.body1)
     }
 }
 
@@ -57,5 +70,5 @@ fun Preview_NewsItemPage() {
         tags = listOf("facebook", "penz")
     )
 
-    NewsItemPage(news = news)
+    NewsItemPage(newsId = news.id)
 }

@@ -78,7 +78,7 @@ fun NowPlayingBarCollapsed(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
         ) {
-            PlayPauseButton(playbackState, onPlayPausePressed)
+            PlayPauseButton(playbackState = playbackState, onClick = onPlayPausePressed)
         }
     }
 }

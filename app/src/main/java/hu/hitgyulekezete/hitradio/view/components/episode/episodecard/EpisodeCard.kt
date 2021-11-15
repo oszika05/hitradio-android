@@ -24,6 +24,7 @@ import hu.hitgyulekezete.hitradio.model.program.PersonType
 import hu.hitgyulekezete.hitradio.model.program.Program
 import hu.hitgyulekezete.hitradio.view.PlayPauseButton
 import hu.hitgyulekezete.hitradio.view.common.preview.PreviewContainer
+import hu.hitgyulekezete.hitradio.view.components.listitem.ListItem
 import java.util.*
 
 @Composable
@@ -34,62 +35,15 @@ fun EpisodeCard(
     playbackState: AudioStateManager.PlaybackState,
     onPlayClick: () -> Unit = {},
 ) {
-    Row(
-        modifier = modifier
-            .height(78.dp)
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clickable {
-                onClick()
-            },
-    ) {
-        Box(
-            Modifier
-                .fillMaxHeight()
-                .aspectRatio(1f),
-            contentAlignment = Alignment.Center,
-        ) {
-            Image(
-                rememberImagePainter(episode.program.pictureOrDefault),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .aspectRatio(1f)
-                    .clip(RoundedCornerShape(25))
-            )
-
-            PlayPauseButton(playbackState = playbackState) {
-                onPlayClick()
-            }
-        }
-
-        Column(
-            Modifier
-                .fillMaxHeight()
-                .padding(start = 12.dp),
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Text(
-                episode.title,
-                color = MaterialTheme.colors.onSurface,
-                style = MaterialTheme.typography.body1,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                episode.program.name,
-                color = MaterialTheme.colors.onSurface,
-                style = MaterialTheme.typography.body2,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
-
-    }
+    ListItem(
+        modifier = modifier,
+        image = rememberImagePainter(episode.program.pictureOrDefault),
+        title = episode.title,
+        subtitle = episode.program.name,
+        playbackState = playbackState,
+        onPlayPauseClick = onPlayClick,
+        onClick = onClick
+    )
 }
 
 @Preview

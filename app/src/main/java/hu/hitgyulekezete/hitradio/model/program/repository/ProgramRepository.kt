@@ -95,8 +95,8 @@ class ProgramRepository {
     suspend fun getPeople(
         from: Int,
         pageSize: Int,
-        search: String?,
-        type: PersonType?
+        search: String? = null,
+        type: PersonType? = null,
     ): List<Person> {
         return try {
             withContext(Dispatchers.IO) {

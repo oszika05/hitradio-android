@@ -16,13 +16,14 @@ import hu.hitgyulekezete.hitradio.audio.controller.AudioStateManager
 @Composable
 fun PlayPauseButton(
     playbackState: AudioStateManager.PlaybackState,
-    onClick: () -> Unit
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
 ) {
     IconButton(
         onClick = {
             onClick()
         },
-        modifier = Modifier
+        modifier = modifier
             .fillMaxHeight()
             .aspectRatio(1f)
     ) {
