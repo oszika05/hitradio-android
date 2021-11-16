@@ -32,14 +32,14 @@ val Colors.secondaryText: Color
     @Composable get() = if (isLight) Color(0xff737373) else Color(0xff737373)
 
 private val LightColors = lightColors(
-    primary = Color(0xff42a5f5),
-    primaryVariant = Color(0xff0077c2),
-    secondary = Color(0xff7e57c2),
-    secondaryVariant = Color(0xffb085f5),
+    primary = Color(0xff007AFF),
+    primaryVariant = Color(0xff007AFF),
+    secondary = Color(0xff007AFF),
+    secondaryVariant = Color(0xff007AFF),
     background = Color(0xffE5E5E5),
     surface = Color(0xffffffff),
     error = Color(0xffff6f60),
-    onPrimary = Color(0xff000000),
+    onPrimary = Color(0xffffffff),
     onSecondary = Color(0xffffffff),
     onBackground = Color(0xff000000),
     onSurface = Color(0xff202039),
@@ -47,10 +47,10 @@ private val LightColors = lightColors(
 )
 
 private val DarkColors = darkColors(
-    primary = Color(0xff42a5f5),
-    primaryVariant = Color(0xff0077c2),
-    secondary = Color(0xff7e57c2),
-    secondaryVariant = Color(0xffb085f5),
+    primary = Color(0xff007AFF),
+    primaryVariant = Color(0xff007AFF),
+    secondary = Color(0xff007AFF),
+    secondaryVariant = Color(0xff007AFF),
     background = Color(0xffE5E5E5),
     surface = Color(0xffffffff),
     error = Color(0xffff6f60),

@@ -39,6 +39,8 @@ import hu.hitgyulekezete.hitradio.audio.VolumeObserver
 import hu.hitgyulekezete.hitradio.audio.controller.AudioController
 import hu.hitgyulekezete.hitradio.model.news.News
 import hu.hitgyulekezete.hitradio.view.layout.HitradioTheme
+import hu.hitgyulekezete.hitradio.view.layout.primaryText
+import hu.hitgyulekezete.hitradio.view.layout.secondaryText
 import hu.hitgyulekezete.hitradio.view.nowplaying.NowPlayingBar
 import hu.hitgyulekezete.hitradio.view.pages.discover.DiscoverPage
 import hu.hitgyulekezete.hitradio.view.pages.episode.EpisodePage
@@ -88,7 +90,10 @@ private fun BottomBar(
     navControllers: Map<BottomNavigationPages, NavHostController>,
 ) {
 
-    BottomNavigation {
+    BottomNavigation(
+        backgroundColor = MaterialTheme.colors.background,
+        contentColor = MaterialTheme.colors.secondaryText,
+    ) {
         routes.forEach { route ->
 
             val navController = navControllers[route] ?: return@forEach
@@ -97,6 +102,8 @@ private fun BottomBar(
                 icon = { route.icon() },
                 label = { Text(route.label) },
                 selected = currentRoute.key == route.key,
+                selectedContentColor = MaterialTheme.colors.primary,
+                unselectedContentColor = MaterialTheme.colors.secondaryText,
                 onClick = {
                     if (currentRoute.key == route.key) {
                         navController.navigate(route.key) {

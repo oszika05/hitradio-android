@@ -58,7 +58,7 @@ fun HomePage(
     LazyColumn(
         Modifier
             .fillMaxWidth(),
-        contentPadding = PaddingValues(vertical = 32.dp),
+        contentPadding = PaddingValues(vertical = 24.dp),
     ) {
         item("header") {
             Row(
