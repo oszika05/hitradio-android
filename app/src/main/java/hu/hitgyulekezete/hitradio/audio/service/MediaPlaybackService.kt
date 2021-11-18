@@ -294,12 +294,16 @@ class MediaPlaybackService : MediaBrowserServiceCompat(), CoroutineScope {
             source?.removeObserver(observer!!)
         }
 
+        source = item
+
         if (item == null) {
             return
         }
 
         observer = object : Source.MetadataObserver {
+            val capturedSource = item
             override fun onMetadataChanged(metadata: Metadata) {
+                Log.d("ALMA", "ZS metadata: $metadata, capturedSource: ${capturedSource?.name}")
                 Handler(player.applicationLooper).post {
                     if (currentMetadata == metadata) {
                         return@post

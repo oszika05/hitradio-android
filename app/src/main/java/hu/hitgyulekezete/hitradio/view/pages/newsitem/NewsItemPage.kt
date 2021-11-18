@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import hu.hitgyulekezete.hitradio.model.news.News
 import hu.hitgyulekezete.hitradio.view.components.tag.Tag
+import hu.hitgyulekezete.hitradio.view.nowplaying.NowPlayingPadding
 import java.util.*
 
 @Composable
@@ -54,6 +55,8 @@ fun NewsItemPage(
             }
 
             Text(news.content, style = MaterialTheme.typography.body1)
+
+            NowPlayingPadding()
         }
     }
 }

@@ -21,6 +21,7 @@ import hu.hitgyulekezete.hitradio.audio.metadata.source.ChangingMetadataSource
 import hu.hitgyulekezete.hitradio.audio.metadata.source.LIVE_ID
 import hu.hitgyulekezete.hitradio.model.programguide.startHourString
 import hu.hitgyulekezete.hitradio.view.PlayPauseButton
+import hu.hitgyulekezete.hitradio.view.nowplaying.NowPlayingPadding
 
 @Composable
 fun LivePage(
@@ -32,7 +33,7 @@ fun LivePage(
     val programsByDay by viewModel.programsByDay.collectAsState(mapOf())
     val nextPrograms by viewModel.nextPrograms.collectAsState(listOf())
 
-    Column() {
+    Column {
         currentProgram?.let { currentProgram ->
             Text(currentProgram.titleWithReplay)
 
@@ -62,6 +63,8 @@ fun LivePage(
                 }
 
             }
+
+        NowPlayingPadding()
     }
 
 }

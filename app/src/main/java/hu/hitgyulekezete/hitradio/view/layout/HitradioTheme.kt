@@ -24,6 +24,7 @@ val Colors.warning: Color
 
 val Colors.shadow: Color
     @Composable get() = if (isLight) Color(0x20000000) else Color(0x00000000)
+//    @Composable get() = if (isLight) Color(0xff000000) else Color(0x00000000)
 
 val Colors.primaryText: Color
     @Composable get() = if (isLight) Color(0xff000000) else Color(0xff000000)
@@ -31,12 +32,21 @@ val Colors.primaryText: Color
 val Colors.secondaryText: Color
     @Composable get() = if (isLight) Color(0xff737373) else Color(0xff737373)
 
+val Colors.black: Color
+    @Composable get() = if (isLight) Color(0xff000000) else Color(0xff000000)
+
+val Colors.white: Color
+    @Composable get() = if (isLight) Color(0xffffffff) else Color(0xffffffff)
+
+val Colors.navBarColor: Color
+    @Composable get() = if (isLight) Color(0xfff2f2f2) else Color(0xfff2f2f2)
+
 private val LightColors = lightColors(
     primary = Color(0xff007AFF),
     primaryVariant = Color(0xff007AFF),
     secondary = Color(0xff007AFF),
     secondaryVariant = Color(0xff007AFF),
-    background = Color(0xffE5E5E5),
+    background = Color(0xffffffff),
     surface = Color(0xffffffff),
     error = Color(0xffff6f60),
     onPrimary = Color(0xffffffff),
@@ -51,7 +61,7 @@ private val DarkColors = darkColors(
     primaryVariant = Color(0xff007AFF),
     secondary = Color(0xff007AFF),
     secondaryVariant = Color(0xff007AFF),
-    background = Color(0xffE5E5E5),
+    background = Color(0xffffffff),
     surface = Color(0xffffffff),
     error = Color(0xffff6f60),
     onPrimary = Color(0xffffffff),
@@ -73,6 +83,11 @@ private val typography = Typography(
     h3 = TextStyle(
         fontSize = 20.sp,
         fontWeight = FontWeight.Medium,
+    ),
+    h4 = TextStyle(
+        fontSize = 15.sp,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 18.sp,
     ),
     subtitle1 = TextStyle(
         fontSize = 17.sp,
@@ -96,7 +111,7 @@ private val typography = Typography(
     ),
     button = TextStyle(
         fontSize = 17.sp,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Normal,
     ),
 )
 

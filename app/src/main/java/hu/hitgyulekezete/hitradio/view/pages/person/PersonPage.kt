@@ -20,6 +20,7 @@ import androidx.paging.compose.items
 import coil.compose.rememberImagePainter
 import hu.hitgyulekezete.hitradio.model.program.Episode
 import hu.hitgyulekezete.hitradio.model.program.pictureOrDefault
+import hu.hitgyulekezete.hitradio.view.nowplaying.nowPlayingPadding
 
 @Composable
 fun PersonPage(
@@ -66,6 +67,8 @@ fun PersonPage(
                         }
                 )
             }
+
+            nowPlayingPadding()
         }
     }
 }

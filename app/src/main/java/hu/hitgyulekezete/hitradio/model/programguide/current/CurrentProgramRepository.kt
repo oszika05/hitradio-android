@@ -109,9 +109,7 @@ class CurrentProgramRepository(
 
         val nextProgramDateStart = nextPrograms.firstOrNull()?.start
 
-        currentProgram = current
-        _currentProgramLiveData.postValue(current)
-        _currentOrDefault.value = current ?: defaultProgram.copy(
+        val currentOrDefault = current ?: defaultProgram.copy(
             start = Calendar.getInstance().run {
                 add(Calendar.MINUTE, 3)
                 set(Calendar.MINUTE, 0)
@@ -129,8 +127,12 @@ class CurrentProgramRepository(
             },
         )
 
+        currentProgram = current
+        _currentProgramLiveData.postValue(current)
+        _currentOrDefault.value = currentOrDefault
+
         for (observer in observers) {
-            observer.onCurrentProgramChange(current)
+            observer.onCurrentProgramChange(currentOrDefault)
         }
     }
 
@@ -147,9 +149,11 @@ class CurrentProgramRepository(
             time
         }
 
-        timer?.schedule(nextPlus5) {
-            updateCurrent()
-            scheduleNext()
+        if (nextPlus5.after(Date())) {
+            timer?.schedule(nextPlus5) {
+                updateCurrent()
+                scheduleNext()
+            }
         }
     }
 

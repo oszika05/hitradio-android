@@ -22,6 +22,7 @@ import hu.hitgyulekezete.hitradio.audio.controller.sourcePlaybackState
 import hu.hitgyulekezete.hitradio.model.program.Episode
 import hu.hitgyulekezete.hitradio.model.program.asSource
 import hu.hitgyulekezete.hitradio.view.PlayPauseButton
+import hu.hitgyulekezete.hitradio.view.nowplaying.nowPlayingPadding
 
 @Composable
 fun ProgramPage(
@@ -81,6 +82,8 @@ fun ProgramPage(
                 }
             }
         }
+
+        nowPlayingPadding()
     }
 
 

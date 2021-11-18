@@ -29,12 +29,15 @@ import hu.hitgyulekezete.hitradio.model.news.News
 import hu.hitgyulekezete.hitradio.model.program.Episode
 import hu.hitgyulekezete.hitradio.model.program.Person
 import hu.hitgyulekezete.hitradio.model.program.asSource
+import hu.hitgyulekezete.hitradio.view.common.modifiers.coloredshadow.coloredShadow
 import hu.hitgyulekezete.hitradio.view.components.button.Button
 import hu.hitgyulekezete.hitradio.view.components.button.ButtonVariant
 import hu.hitgyulekezete.hitradio.view.components.episode.episodecard.EpisodeCard
 import hu.hitgyulekezete.hitradio.view.components.news.newscard.NewsCard
 import hu.hitgyulekezete.hitradio.view.components.person.personcard.PersonCard
 import hu.hitgyulekezete.hitradio.view.layout.primaryText
+import hu.hitgyulekezete.hitradio.view.nowplaying.NowPlayingPadding
+import hu.hitgyulekezete.hitradio.view.nowplaying.nowPlayingPadding
 
 @Composable
 fun HomePage(
@@ -209,6 +212,7 @@ fun HomePage(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
+                        .coloredShadow()
                         .clip(RoundedCornerShape(16.dp))
                         .background(MaterialTheme.colors.surface)
                         .padding(horizontal = 16.dp)
@@ -224,5 +228,7 @@ fun HomePage(
 
             }
         }
+
+        nowPlayingPadding()
     }
 }

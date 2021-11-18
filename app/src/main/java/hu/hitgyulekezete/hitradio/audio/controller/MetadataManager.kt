@@ -18,6 +18,7 @@ class MetadataManager(
 
     private val controllerCallback = object : MediaControllerCompat.Callback() {
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
+            Log.d("ALMA", "onMetadataChanged: ${metadata?.description}")
             _metadata.value = Metadata.from(metadata?.description)
         }
     }

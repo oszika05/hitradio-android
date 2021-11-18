@@ -1,53 +1,32 @@
 package hu.hitgyulekezete.hitradio.view.pages
 
-import android.app.Activity
 import android.media.AudioManager
-import android.net.Uri
-import android.os.Build
-import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Podcasts
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.google.gson.Gson
-import dagger.hilt.android.lifecycle.HiltViewModel
+import hu.hitgyulekezete.hitradio.R
 import hu.hitgyulekezete.hitradio.audio.VolumeObserver
 import hu.hitgyulekezete.hitradio.audio.controller.AudioController
-import hu.hitgyulekezete.hitradio.model.news.News
 import hu.hitgyulekezete.hitradio.view.layout.HitradioTheme
-import hu.hitgyulekezete.hitradio.view.layout.primaryText
 import hu.hitgyulekezete.hitradio.view.layout.secondaryText
+import hu.hitgyulekezete.hitradio.view.layout.navBarColor
 import hu.hitgyulekezete.hitradio.view.nowplaying.NowPlayingBar
 import hu.hitgyulekezete.hitradio.view.pages.discover.DiscoverPage
 import hu.hitgyulekezete.hitradio.view.pages.episode.EpisodePage
 import hu.hitgyulekezete.hitradio.view.pages.episodes.EpisodesPage
 import hu.hitgyulekezete.hitradio.view.pages.live.LivePage
 import hu.hitgyulekezete.hitradio.view.pages.news.NewsPage
-import hu.hitgyulekezete.hitradio.view.pages.news.NewsPageViewModel
 import hu.hitgyulekezete.hitradio.view.pages.newsitem.NewsItemPage
 import hu.hitgyulekezete.hitradio.view.pages.people.PeoplePage
 import hu.hitgyulekezete.hitradio.view.pages.person.PersonPage
@@ -61,22 +40,22 @@ private data class BottomNavigationPages(
     val icon: @Composable () -> Unit
 ) {
     companion object {
-        val Home = BottomNavigationPages("home", "Home") @Composable {
+        val Home = BottomNavigationPages("home", "Főoldal") @Composable {
             Icon(
-                Icons.Default.Home,
-                contentDescription = "home"
+                painterResource(id = R.drawable.ic_navbar_home),
+                contentDescription = "Főoldal"
             )
         }
-        val Live = BottomNavigationPages("live", "Live") @Composable {
+        val Live = BottomNavigationPages("live", "Lejátszó") @Composable {
             Icon(
-                Icons.Default.Podcasts,
-                contentDescription = "live"
+                painterResource(id = R.drawable.ic_navbar_nowplaying),
+                contentDescription = "Lejátszó oldal"
             )
         }
-        val Discover = BottomNavigationPages("discover", "Discover") @Composable {
+        val Discover = BottomNavigationPages("discover", "Keresés") @Composable {
             Icon(
-                Icons.Default.Search,
-                contentDescription = "discover"
+                painterResource(id = R.drawable.ic_navbar_discover),
+                contentDescription = "Keresés oldal"
             )
         }
     }
@@ -91,7 +70,7 @@ private fun BottomBar(
 ) {
 
     BottomNavigation(
-        backgroundColor = MaterialTheme.colors.background,
+        backgroundColor = MaterialTheme.colors.navBarColor,
         contentColor = MaterialTheme.colors.secondaryText,
     ) {
         routes.forEach { route ->

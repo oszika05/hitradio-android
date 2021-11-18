@@ -1,12 +1,8 @@
-package hu.hitgyulekezete.hitradio.view.components.listitem
+package hu.hitgyulekezete.hitradio.view.components.card
 
-import android.media.session.PlaybackState
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +26,7 @@ import hu.hitgyulekezete.hitradio.view.layout.secondaryText
 
 
 @Composable
-fun ListItem(
+fun Card(
     image: Painter,
     contentDescription: String? = null,
     title: String,
@@ -38,12 +34,20 @@ fun ListItem(
     onClick: () -> Unit = {},
     playbackState: AudioStateManager.PlaybackState? = null,
     onPlayPauseClick: () -> Unit = {},
+    fullWidth: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
+            .run {
+                if (fullWidth) {
+                    this
+                } else {
+                    this.width(311.dp)
+                }
+            }
             .coloredShadow()
+            .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colors.surface)
             .clickable { onClick() }
     ) {
@@ -67,7 +71,9 @@ fun ListItem(
                     modifier = Modifier
                         .width(64.dp)
                         .height(64.dp),
-                    playbackState = playbackState
+                    isLight = true,
+                    circleAroundButton = true,
+                    playbackState = playbackState,
                 ) {
                     onPlayPauseClick()
                 }
@@ -105,10 +111,12 @@ fun ListItem(
 
 @Preview
 @Composable
-fun Preview_ListIem() {
+fun Preview_Card() {
     PreviewContainer {
-        Column {
-            ListItem(
+        Column(
+            Modifier.verticalScroll(rememberScrollState())
+        ) {
+            Card(
                 image = rememberImagePainter("https://upload.wikimedia.org/wikipedia/commons/5/51/450px-Shoebill-cropped.JPG"),
                 title = "Lorem ipsum dolor sit amet, consect adipiscing elit ut aliquam",
                 subtitle = "Hitköznapok",
@@ -117,9 +125,19 @@ fun Preview_ListIem() {
 
             Spacer(Modifier.height(16.dp))
 
-            ListItem(
+            Card(
                 image = rememberImagePainter("https://upload.wikimedia.org/wikipedia/commons/5/51/450px-Shoebill-cropped.JPG"),
                 title = "Lorem ipsum dolor sit amet, consect adipiscing elit ut aliquam",
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            Card(
+                image = rememberImagePainter("https://upload.wikimedia.org/wikipedia/commons/5/51/450px-Shoebill-cropped.JPG"),
+                title = "Lorem ipsum dolor sit amet, consect adipiscing elit ut aliquam",
+                subtitle = "Hitköznapok",
+                playbackState = AudioStateManager.PlaybackState.STOPPED,
+                fullWidth = false,
             )
         }
 

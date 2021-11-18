@@ -25,6 +25,7 @@ import hu.hitgyulekezete.hitradio.model.program.Person
 import hu.hitgyulekezete.hitradio.model.program.asSource
 import hu.hitgyulekezete.hitradio.view.PlayPauseButton
 import hu.hitgyulekezete.hitradio.view.components.tag.Tag
+import hu.hitgyulekezete.hitradio.view.nowplaying.NowPlayingPadding
 
 @Composable
 fun EpisodePage(
@@ -110,6 +111,8 @@ fun EpisodePage(
                     )
                 }
             }
+
+            NowPlayingPadding()
         }
     }
 }

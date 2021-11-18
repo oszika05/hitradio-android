@@ -59,19 +59,24 @@ private fun toArgbCompat(color: Long): Int {
 }
 
 @Composable
+fun Modifier.nowPlayingShadow(): Modifier {
+    return this.coloredShadow(
+        offsetY = -(4.dp),
+    )
+}
+
+@Composable
 fun Modifier.coloredShadow(
     color: Color = MaterialTheme.colors.shadow,
-    alpha: Float = 0.2f,
-    borderRadius: Dp = 43.dp,
-//    borderRadius: Dp = 0.dp,
-//    shadowRadius: Dp = 16.dp,
-    shadowRadius: Dp = -(8.dp),
+    alpha: Float = 0.1f,
+    borderRadius: Dp = 42.dp,
+    shadowRadius: Dp = 22.dp,
     offsetY: Dp = 17.dp,
     offsetX: Dp = 0.dp,
 ): Modifier {
-    if (!MaterialTheme.colors.isLight) {
-        return this
-    }
+//    if (!MaterialTheme.colors.isLight) {
+//        return this
+//    }
 
     return this.drawBehind {
         val transparentColor = toArgbCompat(color.copy(alpha = 0f).value.toLong())

@@ -19,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import hu.hitgyulekezete.hitradio.model.program.Person
+import hu.hitgyulekezete.hitradio.view.nowplaying.nowPlayingPadding
 
 @ExperimentalFoundationApi
 @Composable
@@ -75,6 +76,8 @@ fun PeoplePage(
                                     }
                             )
                         }
+
+                        nowPlayingPadding()
                     }
                 }
                 1 -> {
@@ -91,14 +94,12 @@ fun PeoplePage(
                                     }
                             )
                         }
+
+                        nowPlayingPadding()
                     }
                 }
             }
         }
-        if (selectedTabIndex == 1) {
-
-        }
-
     }
 
 }

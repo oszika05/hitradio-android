@@ -1,6 +1,7 @@
 package hu.hitgyulekezete.hitradio.view.nowplaying
 
 import android.media.AudioManager
+import android.util.Log
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.Text
@@ -34,6 +35,8 @@ fun NowPlayingBar(
     val playbackState by audioController.playbackState.collectAsState()
     val seekPosition by audioController.seekPosition.collectAsState()
     val volume by volumeObserver.volume.observeAsState(0.0f)
+
+    Log.d("ALMA", "outside layout $metadata")
 
     NowPlayingBarLayout(
         metadata = metadata ?: Metadata.Empty,

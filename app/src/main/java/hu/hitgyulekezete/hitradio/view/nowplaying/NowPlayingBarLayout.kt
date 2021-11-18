@@ -1,8 +1,10 @@
 package hu.hitgyulekezete.hitradio.view.nowplaying
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -20,6 +22,17 @@ import kotlin.math.roundToInt
 
 val barHeight = 64.dp
 
+@Composable
+fun Modifier.nowPlayingPadding() = this.padding(bottom = barHeight)
+
+@Composable
+fun NowPlayingPadding() = Spacer(modifier = Modifier.nowPlayingPadding())
+
+fun LazyListScope.nowPlayingPadding() {
+    item("now_playing_padding") {
+        NowPlayingPadding()
+    }
+}
 
 @ExperimentalMaterialApi
 @Composable
@@ -27,7 +40,7 @@ fun NowPlayingBarLayout(
     modifier: Modifier = Modifier,
     metadata: Metadata,
     playbackState: AudioStateManager.PlaybackState,
-    seekPercentage: Float?,
+    seekPercentage: Float?, // TODO as State<> to prevent unnecesarry renders?
     volumePercentage: Float,
     onSeekTo: (Float) -> Unit,
     onSetVolume: (Float) -> Unit,
@@ -46,6 +59,9 @@ fun NowPlayingBarLayout(
 
     val coroutineScope = rememberCoroutineScope()
 
+    val isMetadataEmpty = remember(metadata) { metadata == Metadata.Empty }
+    Log.d("ALMA", "metadata: $metadata, isMetadataEmpty: $isMetadataEmpty")
+
     Box(
         modifier
             .fillMaxSize()
@@ -55,38 +71,36 @@ fun NowPlayingBarLayout(
     ) {
         Box(
             Modifier
-                .padding(bottom = barHeight)
-                .alpha(getSwipeState())
+//                .padding(bottom = barHeight)
+                .alpha(if (isMetadataEmpty) 1f else getSwipeState())
         ) {
             content()
         }
 
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .offset {
-                    return@offset IntOffset(0, swipeableState.offset.value.roundToInt())
-                }
-                .swipeable(
-                    state = swipeableState,
-                    anchors = anchors,
-                    thresholds = { _, _ -> FractionalThreshold(0.2f) },
-                    orientation = Orientation.Vertical
-                )
-        ) {
-            Card(
+        if (!isMetadataEmpty) {
+            Box(
                 Modifier
-                    .height(barHeight)
                     .fillMaxWidth()
-                    .alpha(getSwipeState()),
-                elevation = 8.dp,
+                    .offset {
+                        return@offset IntOffset(0, swipeableState.offset.value.roundToInt())
+                    }
+                    .swipeable(
+                        state = swipeableState,
+                        anchors = anchors,
+                        thresholds = { _, _ -> FractionalThreshold(0.2f) },
+                        orientation = Orientation.Vertical
+                    )
             ) {
                 Column(
-                    Modifier.clickable {
-                        coroutineScope.launch {
-                            swipeableState.animateTo(1)
+                    Modifier
+                        .height(barHeight)
+                        .fillMaxWidth()
+                        .alpha(getSwipeState())
+                        .clickable {
+                            coroutineScope.launch {
+                                swipeableState.animateTo(1)
+                            }
                         }
-                    }
                 ) {
                     NowPlayingBarCollapsed(
                         height = barHeight,
@@ -95,31 +109,29 @@ fun NowPlayingBarLayout(
                         metadata = metadata
                     )
                 }
-            }
 
-            Card(
-                Modifier
-                    .fillMaxWidth()
-                    .alpha(1 - getSwipeState())
-            ) {
-                NowPlayingBarExpanded(
-                    playbackState = playbackState,
-                    metadata = metadata,
-                    seekPercentage = seekPercentage,
-                    volumePercentage = volumePercentage,
-                    onPlayPause = onPlayPausePressed,
-                    onSeekTo = onSeekTo,
-                    onSetVolume = onSetVolume,
-                    onClose = {
-                        coroutineScope.launch {
-                            swipeableState.animateTo(0)
+                Card(
+                    Modifier
+                        .fillMaxWidth()
+                        .alpha(1 - getSwipeState())
+                ) {
+                    NowPlayingBarExpanded(
+                        playbackState = playbackState,
+                        metadata = metadata,
+                        seekPercentage = seekPercentage,
+                        volumePercentage = volumePercentage,
+                        onPlayPause = onPlayPausePressed,
+                        onSeekTo = onSeekTo,
+                        onSetVolume = onSetVolume,
+                        onClose = {
+                            coroutineScope.launch {
+                                swipeableState.animateTo(0)
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
-
-
     }
 }
 

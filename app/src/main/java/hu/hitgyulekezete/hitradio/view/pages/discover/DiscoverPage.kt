@@ -28,6 +28,7 @@ import hu.hitgyulekezete.hitradio.view.components.button.Button
 import hu.hitgyulekezete.hitradio.view.components.button.ButtonVariant
 import hu.hitgyulekezete.hitradio.view.components.episode.episodecard.EpisodeCard
 import hu.hitgyulekezete.hitradio.view.components.textfield.TextField
+import hu.hitgyulekezete.hitradio.view.nowplaying.nowPlayingPadding
 
 
 @ExperimentalFoundationApi
@@ -161,5 +162,7 @@ fun DiscoverPage(
                 },
             )
         }
+
+        nowPlayingPadding()
     }
 }

@@ -1,5 +1,6 @@
 package hu.hitgyulekezete.hitradio.audio.metadata.source
 
+import android.util.Log
 import hu.hitgyulekezete.hitradio.audio.metadata.Metadata
 import hu.hitgyulekezete.hitradio.audio.metadata.MetadataType
 import hu.hitgyulekezete.hitradio.audio.metadata.source.url.SourceUrl
@@ -31,11 +32,11 @@ class ChangingMetadataSource(
     }
 
     override fun removeObserver(observer: Source.MetadataObserver) {
+        Log.d("ALMA", "changing removeObserver: $observer ${this.observer == observer}")
         if (this.observer == observer) {
-            currentProgramRepository.end()
             this.observer = null
+            currentProgramRepository.end()
         }
-
     }
 
     fun end() {
