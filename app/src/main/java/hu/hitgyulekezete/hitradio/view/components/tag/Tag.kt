@@ -1,12 +1,11 @@
 package hu.hitgyulekezete.hitradio.view.components.tag
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,6 +14,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.android.material.chip.Chip
 import hu.hitgyulekezete.hitradio.view.common.preview.PreviewContainer
+import hu.hitgyulekezete.hitradio.view.layout.secondaryText
+import hu.hitgyulekezete.hitradio.view.layout.tag
 
 @Composable
 fun Tag(
@@ -22,21 +23,26 @@ fun Tag(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
 ) {
-    Card(
-        shape = RoundedCornerShape(50),
-        modifier = modifier.run {
-            if (onClick != null) {
-                return@run this
-                    .clickable { onClick() }
-            }
+    Box(
+        modifier = modifier
+            .height(30.dp)
+            .clip(RoundedCornerShape(4.dp))
+            .background(MaterialTheme.colors.tag)
+            .run {
+                if (onClick != null) {
+                    return@run this
+                        .clickable { onClick() }
+                }
 
-            Modifier
-        }
+                this
+            }
     ) {
         Text(
             text,
+            style = MaterialTheme.typography.body1,
+            color = MaterialTheme.colors.secondaryText,
             modifier = Modifier
-                .padding(horizontal = 12.dp, vertical = 4.dp),
+                .padding(horizontal = 16.dp, vertical = 4.dp),
         )
     }
 }

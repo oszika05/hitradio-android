@@ -41,6 +41,9 @@ val Colors.white: Color
 val Colors.navBarColor: Color
     @Composable get() = if (isLight) Color(0xfff2f2f2) else Color(0xfff2f2f2)
 
+val Colors.tag: Color
+    @Composable get() = if (isLight) Color(0xffEEEEEE) else Color(0xffEEEEEE)
+
 private val LightColors = lightColors(
     primary = Color(0xff007AFF),
     primaryVariant = Color(0xff007AFF),

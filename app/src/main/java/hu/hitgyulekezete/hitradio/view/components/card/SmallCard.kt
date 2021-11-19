@@ -35,7 +35,12 @@ fun SmallCard(
 ) {
     Row(
         modifier
-            .coloredShadow()
+            .fillMaxWidth()
+            .coloredShadow(
+                offsetY = 3.dp,
+                borderRadius = 16.dp,
+                shadowRadius = 8.dp,
+            )
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colors.surface)
             .clickable { onClick() }

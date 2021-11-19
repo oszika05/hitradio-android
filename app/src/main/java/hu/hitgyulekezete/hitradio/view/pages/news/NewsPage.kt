@@ -85,28 +85,37 @@ fun NewsPage(
                 CircularProgressIndicator()
             }
         } else {
-            groupedByItems(
-                items = news,
-                key = { it.id },
-                groupBy = { item ->
-                    val diffInMillis = Date().time - item.date.time
-                    val diff = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
-                    when (diff) {
-                        0L -> "Ma"
-                        1L -> "Tegnap"
-                        else -> "$diff napja"
-                    }
-                },
-                header = {
-                    Text(it)
-                }
-            ) { news ->
+            items(news) { news ->
+                news ?: return@items
+
                 NewsCard(
                     news,
                     onClick = { onNewsItemClick(news) },
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
             }
+//            groupedByItems(
+//                items = news,
+//                key = { it.id },
+//                groupBy = { item ->
+//                    val diffInMillis = Date().time - item.date.time
+//                    val diff = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
+//                    when (diff) {
+//                        0L -> "Ma"
+//                        1L -> "Tegnap"
+//                        else -> "$diff napja"
+//                    }
+//                },
+//                header = {
+//                    Text(it)
+//                }
+//            ) { news ->
+//                NewsCard(
+//                    news,
+//                    onClick = { onNewsItemClick(news) },
+//                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+//                )
+//            }
 
 //            items(news, key = { it.id }) { newsItem ->
 //                val news = newsItem ?: return@items
