@@ -19,45 +19,16 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import hu.hitgyulekezete.hitradio.model.common.date.daysSince
+import hu.hitgyulekezete.hitradio.model.common.date.toReadableString
 import hu.hitgyulekezete.hitradio.model.news.News
+import hu.hitgyulekezete.hitradio.view.components.list.GroupHeader
+import hu.hitgyulekezete.hitradio.view.components.list.groupedByItems
 import hu.hitgyulekezete.hitradio.view.components.news.newscard.NewsCard
 import hu.hitgyulekezete.hitradio.view.components.textfield.TextField
 import hu.hitgyulekezete.hitradio.view.nowplaying.nowPlayingPadding
 import java.util.*
 import java.util.concurrent.TimeUnit
-
-@ExperimentalFoundationApi
-fun <T : Any, G> LazyListScope.groupedByItems(
-    items: LazyPagingItems<T>,
-    groupBy: (item: T) -> G,
-    key: (item: T) -> Any,
-    header: @Composable (group: G) -> Unit,
-    content: @Composable (item: T) -> Unit,
-) {
-    val groups: MutableMap<G, List<T>> = mutableMapOf()
-    for (i in 0 until items.itemCount) {
-        val item = items[i] ?: continue
-
-        val group = groupBy(item)
-
-        if (!groups.containsKey(group)) {
-            groups[group] = listOf()
-        }
-
-        groups[group] = groups[group]!! + item
-    }
-
-    for ((group, items) in groups.entries) {
-        item(group) {
-            header(group)
-        }
-
-        items(items, key = key) { item: T ->
-            content(item)
-        }
-    }
-}
-
 
 @ExperimentalFoundationApi
 @Composable
@@ -85,37 +56,32 @@ fun NewsPage(
                 CircularProgressIndicator()
             }
         } else {
-            items(news) { news ->
-                news ?: return@items
-
-                NewsCard(
-                    news,
-                    onClick = { onNewsItemClick(news) },
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                )
-            }
-//            groupedByItems(
-//                items = news,
-//                key = { it.id },
-//                groupBy = { item ->
-//                    val diffInMillis = Date().time - item.date.time
-//                    val diff = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
-//                    when (diff) {
-//                        0L -> "Ma"
-//                        1L -> "Tegnap"
-//                        else -> "$diff napja"
-//                    }
-//                },
-//                header = {
-//                    Text(it)
-//                }
-//            ) { news ->
+//            items(news) { news ->
+//                news ?: return@items
+//
 //                NewsCard(
 //                    news,
 //                    onClick = { onNewsItemClick(news) },
 //                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
 //                )
 //            }
+            groupedByItems(
+                items = news,
+                key = { it.id },
+                groupBy = { item ->
+                    item.date.daysSince().toReadableString()
+                },
+                groupKey = { it },
+                header = { group ->
+                    GroupHeader(group)
+                }
+            ) { news ->
+                NewsCard(
+                    news,
+                    onClick = { onNewsItemClick(news) },
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+            }
 
 //            items(news, key = { it.id }) { newsItem ->
 //                val news = newsItem ?: return@items
