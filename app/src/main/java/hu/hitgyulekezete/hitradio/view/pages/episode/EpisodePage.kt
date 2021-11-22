@@ -65,6 +65,7 @@ fun EpisodePage(
                         episode.title,
                         style = MaterialTheme.typography.h1,
                         color = MaterialTheme.colors.primaryText,
+                        modifier = Modifier.weight(1f)
                     )
 
                     val playbackStateFlow =
@@ -164,9 +165,10 @@ fun EpisodePage(
                     Spacer(Modifier)
 
                     relatedEpisodes.forEach { episode ->
-                        val playbackState by audioController.sourcePlaybackState(episode.id).collectAsState(
-                            initial = AudioStateManager.PlaybackState.STOPPED
-                        )
+                        val playbackState by audioController.sourcePlaybackState(episode.id)
+                            .collectAsState(
+                                initial = AudioStateManager.PlaybackState.STOPPED
+                            )
 
                         HalfSizeEpisodeCard(
                             episode = episode,
@@ -184,7 +186,7 @@ fun EpisodePage(
                 }
 
                 Spacer(Modifier.padding(top = 32.dp))
-                
+
                 NowPlayingPadding()
             }
         }

@@ -1,5 +1,6 @@
 package hu.hitgyulekezete.hitradio.view.components.layout.header
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
@@ -28,13 +29,17 @@ import javax.inject.Inject
 class StickyHeaderViewModel @Inject constructor() : ViewModel() {
     private var lastScrollIndex = 0
 
-    private val _scrollUp = MutableStateFlow(false)
+    private val _scrollUp = MutableStateFlow(true)
     val scrollUp: StateFlow<Boolean> = _scrollUp
+
+    private val _lastScroll = MutableStateFlow<Int>(0)
+    val lastScroll: StateFlow<Int> = _lastScroll
 
     fun updateScrollPosition(newScrollIndex: Int) {
         if (newScrollIndex == lastScrollIndex) return
 
-        _scrollUp.value = newScrollIndex > lastScrollIndex
+        _scrollUp.value = newScrollIndex < lastScrollIndex
+        _lastScroll.value = newScrollIndex
         lastScrollIndex = newScrollIndex
     }
 }
@@ -44,19 +49,23 @@ fun LazyListWithStickyHeader(
     scrollState: LazyListState,
     viewModel: StickyHeaderViewModel = hiltViewModel(),
     headerContent: @Composable () -> Unit,
+    bigHeaderContent: (@Composable () -> Unit)? = null,
     content: LazyListScope.() -> Unit,
 ) {
-    val scrollUpState by viewModel.scrollUp.collectAsState(false)
+    val scrollUp by viewModel.scrollUp.collectAsState(true)
+    val lastScroll by viewModel.lastScroll.collectAsState(0)
 
     viewModel.updateScrollPosition(scrollState.firstVisibleItemIndex)
 
+    val shouldShowMenu = scrollUp && (bigHeaderContent == null || lastScroll > 0)
+
     val position by animateFloatAsState(
-        if (scrollUpState) -300f else 0f,
+        if (shouldShowMenu) 0f else -300f,
         animationSpec = tween(500)
     )
     val alpha by animateFloatAsState(
-        if (scrollUpState) 0f else 1f,
-        animationSpec = if (scrollUpState) {
+        if (shouldShowMenu) 1f else 0f,
+        animationSpec = if (shouldShowMenu) {
             tween(500)
         } else {
             tween(200)
@@ -68,9 +77,14 @@ fun LazyListWithStickyHeader(
             state = scrollState,
         ) {
             item("sticky_header_padding") {
-                Box(Modifier.alpha(0f)) {
-                    headerContent()
+                if (bigHeaderContent != null) {
+                    bigHeaderContent()
+                } else {
+                    Box(Modifier.alpha(0f)) {
+                        headerContent()
+                    }
                 }
+
             }
 
             content()
@@ -96,7 +110,6 @@ fun Preview_StickyHeader() {
         val scrollState = rememberLazyListState()
 
         LazyListWithStickyHeader(scrollState, headerContent = {
-//            Text("This is a test")
             Header("this is a test")
         }) {
             items(100) { i ->

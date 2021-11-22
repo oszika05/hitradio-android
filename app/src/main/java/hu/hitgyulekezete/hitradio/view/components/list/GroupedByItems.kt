@@ -10,6 +10,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import hu.hitgyulekezete.hitradio.view.layout.primaryText
@@ -17,13 +18,15 @@ import hu.hitgyulekezete.hitradio.view.layout.primaryText
 @Composable
 fun GroupHeader(
     group: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    autoPadding: Boolean = true,
+    noBackground: Boolean = false,
 ) {
     Box(
         Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colors.background)
-            .padding(16.dp)
+            .background(if (noBackground) Color.Transparent else MaterialTheme.colors.background)
+            .padding(if (autoPadding) 16.dp else 0.dp)
             .then(modifier)
     ) {
         Text(

@@ -44,27 +44,24 @@ fun NewsItemPage(
 
     val news by viewModel.news.collectAsState(null)
 
+    val image = if (news != null) {
+        rememberImagePainter(news?.picture)
+    } else {
+        null
+    }
+
     PageLayout(
-        headerTitle = /*news?.title ?: */"",
+        headerTitle = news?.let { it.title } ?: "",
+        headerImage = image,
         onBackClick = onBackClick,
     ) {
         news?.let { news ->
             item() {
-                Image(
-                    rememberImagePainter(news.picture),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1.88f)
-                        .padding(bottom = 16.dp)
-                )
-
                 if (news.tags.isNotEmpty()) {
                     Row(
                         Modifier
                             .horizontalScroll(rememberScrollState())
-                            .padding(bottom = 16.dp)
+                            .padding(top = 16.dp)
                             .padding(horizontal = 16.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
@@ -74,16 +71,23 @@ fun NewsItemPage(
                     }
                 }
 
+            }
+
+            item {
                 Text(
                     "2021.11.19",
                     //news.date,
                     color = MaterialTheme.colors.secondaryText,
                     style = MaterialTheme.typography.caption,
                     modifier = Modifier
+                        .padding(top = 16.dp)
                         .padding(bottom = 8.dp)
                         .padding(horizontal = 16.dp),
                 )
 
+            }
+
+            item {
                 Text(
                     news.title,
                     style = MaterialTheme.typography.h1,
@@ -92,8 +96,9 @@ fun NewsItemPage(
                         .padding(bottom = 24.dp)
                         .padding(horizontal = 16.dp),
                 )
+            }
 
-
+            item {
                 Text(
                     news.content,
                     style = MaterialTheme.typography.body1,
@@ -102,13 +107,16 @@ fun NewsItemPage(
                         .padding(bottom = 40.dp)
                         .padding(horizontal = 16.dp),
                 )
+            }
 
+            item {
                 NowPlayingPadding()
             }
         }
-
     }
+
 }
+
 
 @Preview(showBackground = true)
 @Composable
