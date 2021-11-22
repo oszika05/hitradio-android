@@ -209,13 +209,21 @@ fun InnerLayout(
                     viewModel = hiltViewModel(backStack),
                     onNewsItemClick = { news ->
                         navController.navigate("newsitem/${news.id}")
+                    },
+                    onBackClick = {
+                        navController.navigateUp()
                     }
                 )
             }
             composable("newsitem/{item}") { backStackEntry ->
                 val id = backStackEntry.arguments?.getString("item") ?: return@composable
 
-                NewsItemPage(newsId = id)
+                NewsItemPage(
+                    newsId = id,
+                    onBackClick = {
+                        navController.navigateUp()
+                    }
+                )
             }
             composable("episodes") { backStack ->
 
@@ -251,6 +259,9 @@ fun InnerLayout(
                     },
                     onTagClick = {
 
+                    },
+                    onBackClick = {
+                        navController.navigateUp()
                     }
                 )
             }
@@ -264,6 +275,9 @@ fun InnerLayout(
                     onEpisodeClick = { episode ->
                         navController.navigate("episode/${episode.id}")
                     },
+                    onBackClick = {
+                        navController.navigateUp()
+                    }
                 )
             }
             composable("people?search={search}") { backStack ->
@@ -274,6 +288,9 @@ fun InnerLayout(
                     viewModel = hiltViewModel(backStack),
                     onPersonClick = { person ->
                         navController.navigate("person/${person.id}")
+                    },
+                    onBackClick = {
+                        navController.navigateUp()
                     }
                 )
             }
@@ -285,6 +302,9 @@ fun InnerLayout(
                     viewModel = hiltViewModel(backStack),
                     onEpisodeClick = { episode ->
                         navController.navigate("episode/${episode.id}")
+                    },
+                    onBackClick = {
+                        navController.navigateUp()
                     }
                 )
 
@@ -297,6 +317,9 @@ fun InnerLayout(
                     viewModel = hiltViewModel(backStack),
                     onProgramClick = { program ->
                         navController.navigate("program/${program.id}")
+                    },
+                    onBackClick = {
+                        navController.navigateUp()
                     }
                 )
             }

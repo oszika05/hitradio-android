@@ -20,13 +20,15 @@ import androidx.paging.compose.items
 import coil.compose.rememberImagePainter
 import hu.hitgyulekezete.hitradio.model.program.Episode
 import hu.hitgyulekezete.hitradio.model.program.pictureOrDefault
+import hu.hitgyulekezete.hitradio.view.components.layout.PageLayout
 import hu.hitgyulekezete.hitradio.view.nowplaying.nowPlayingPadding
 
 @Composable
 fun PersonPage(
     personId: String,
     viewModel: PersonPageViewModel = hiltViewModel(),
-    onEpisodeClick: (Episode) -> Unit = {}
+    onEpisodeClick: (Episode) -> Unit = {},
+    onBackClick: () -> Unit = {},
 ) {
     LaunchedEffect(personId) {
         viewModel.personId.value = personId
@@ -35,8 +37,11 @@ fun PersonPage(
     val person by viewModel.person.collectAsState(null)
     val episodes = viewModel.episodes.collectAsLazyPagingItems()
 
-    person?.let { person ->
-        LazyColumn {
+    PageLayout(
+        headerTitle = "",
+        onBackClick = onBackClick
+    ) {
+        person?.let { person ->
             item("header") {
                 Image(
                     rememberImagePainter(person.pictureOrDefault),

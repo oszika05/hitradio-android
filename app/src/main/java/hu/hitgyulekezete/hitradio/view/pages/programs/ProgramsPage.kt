@@ -12,13 +12,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import hu.hitgyulekezete.hitradio.model.program.Program
+import hu.hitgyulekezete.hitradio.view.components.layout.PageLayout
 import hu.hitgyulekezete.hitradio.view.nowplaying.nowPlayingPadding
 
 @Composable
 fun ProgramsPage(
     search: String? = null,
     viewModel: ProgramsPageViewModel = hiltViewModel(),
-    onProgramClick: (Program) -> Unit = {}
+    onProgramClick: (Program) -> Unit = {},
+    onBackClick: () -> Unit = {},
 ) {
     LaunchedEffect(search) {
         viewModel.search.value = search
@@ -26,7 +28,10 @@ fun ProgramsPage(
 
     val programs = viewModel.programs.collectAsLazyPagingItems()
 
-    LazyColumn {
+    PageLayout(
+        headerTitle = "Műsorok",
+        onBackClick = onBackClick,
+    ) {
         items(programs) { program ->
             program ?: return@items
 

@@ -22,6 +22,7 @@ import hu.hitgyulekezete.hitradio.audio.controller.sourcePlaybackState
 import hu.hitgyulekezete.hitradio.model.program.Episode
 import hu.hitgyulekezete.hitradio.model.program.asSource
 import hu.hitgyulekezete.hitradio.view.PlayPauseButton
+import hu.hitgyulekezete.hitradio.view.components.layout.PageLayout
 import hu.hitgyulekezete.hitradio.view.nowplaying.nowPlayingPadding
 
 @Composable
@@ -30,6 +31,7 @@ fun ProgramPage(
     audioController: AudioController,
     onEpisodeClick: (Episode) -> Unit = {},
     viewModel: ProgramPageViewModel = hiltViewModel(),
+    onBackClick: () -> Unit = {},
 ) {
     LaunchedEffect(programId) {
         viewModel.programId.value = programId
@@ -37,8 +39,9 @@ fun ProgramPage(
 
     val episodes = viewModel.episodes.collectAsLazyPagingItems()
 
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+    PageLayout(
+        headerTitle = "",
+        onBackClick = onBackClick,
     ) {
         item("header") {
             val program by viewModel.program.collectAsState(initial = null)

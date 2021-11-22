@@ -22,6 +22,7 @@ import androidx.paging.compose.items
 import hu.hitgyulekezete.hitradio.model.common.date.daysSince
 import hu.hitgyulekezete.hitradio.model.common.date.toReadableString
 import hu.hitgyulekezete.hitradio.model.news.News
+import hu.hitgyulekezete.hitradio.view.components.layout.PageLayout
 import hu.hitgyulekezete.hitradio.view.components.list.GroupHeader
 import hu.hitgyulekezete.hitradio.view.components.list.groupedByItems
 import hu.hitgyulekezete.hitradio.view.components.news.newscard.NewsCard
@@ -34,13 +35,17 @@ import java.util.concurrent.TimeUnit
 @Composable
 fun NewsPage(
     viewModel: NewsPageViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    onNewsItemClick: (news: News) -> Unit = {}
+    onNewsItemClick: (news: News) -> Unit = {},
+    onBackClick: () -> Unit = {},
 ) {
     val search by viewModel.search.collectAsState("")
 
     val news = viewModel.news.collectAsLazyPagingItems()
 
-    LazyColumn() {
+    PageLayout(
+        headerTitle = "Legfrissebb hírek",
+        onBackClick = onBackClick,
+    ) {
         item(key = "search") {
 
             TextField(
@@ -56,15 +61,6 @@ fun NewsPage(
                 CircularProgressIndicator()
             }
         } else {
-//            items(news) { news ->
-//                news ?: return@items
-//
-//                NewsCard(
-//                    news,
-//                    onClick = { onNewsItemClick(news) },
-//                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-//                )
-//            }
             groupedByItems(
                 items = news,
                 key = { it.id },
@@ -82,16 +78,6 @@ fun NewsPage(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
             }
-
-//            items(news, key = { it.id }) { newsItem ->
-//                val news = newsItem ?: return@items
-//
-//                NewsCard(
-//                    news,
-//                    onClick = { onNewsItemClick(news) },
-//                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-//                )
-//            }
         }
 
         if (news.loadState.append is LoadState.Loading) {
@@ -101,6 +87,9 @@ fun NewsPage(
         }
 
         nowPlayingPadding()
+    }
+    LazyColumn() {
+
     }
 }
 

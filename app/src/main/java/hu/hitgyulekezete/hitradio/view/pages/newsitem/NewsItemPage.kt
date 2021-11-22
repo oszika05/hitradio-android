@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import hu.hitgyulekezete.hitradio.model.news.News
+import hu.hitgyulekezete.hitradio.view.components.layout.PageLayout
 import hu.hitgyulekezete.hitradio.view.components.tag.Tag
 import hu.hitgyulekezete.hitradio.view.layout.primaryText
 import hu.hitgyulekezete.hitradio.view.layout.secondaryText
@@ -33,6 +34,7 @@ import java.util.*
 fun NewsItemPage(
     newsId: String,
     viewModel: NewsItemPageViewModel = hiltViewModel(),
+    onBackClick: () -> Unit = {},
 ) {
     LaunchedEffect(newsId) {
         viewModel.newsId.value = newsId
@@ -42,66 +44,69 @@ fun NewsItemPage(
 
     val news by viewModel.news.collectAsState(null)
 
-    news?.let { news ->
-        Column(
-            Modifier
-                .verticalScroll(scrollState)
-        ) {
-            Image(
-                rememberImagePainter(news.picture),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1.88f)
-                    .padding(bottom = 16.dp)
-            )
-
-            if (news.tags.isNotEmpty()) {
-                Row(
-                    Modifier
-                        .horizontalScroll(rememberScrollState())
+    PageLayout(
+        headerTitle = /*news?.title ?: */"",
+        onBackClick = onBackClick,
+    ) {
+        news?.let { news ->
+            item() {
+                Image(
+                    rememberImagePainter(news.picture),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1.88f)
                         .padding(bottom = 16.dp)
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    news.tags.forEach { tag ->
-                        Tag(text = tag)
+                )
+
+                if (news.tags.isNotEmpty()) {
+                    Row(
+                        Modifier
+                            .horizontalScroll(rememberScrollState())
+                            .padding(bottom = 16.dp)
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        news.tags.forEach { tag ->
+                            Tag(text = tag)
+                        }
                     }
                 }
+
+                Text(
+                    "2021.11.19",
+                    //news.date,
+                    color = MaterialTheme.colors.secondaryText,
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .padding(horizontal = 16.dp),
+                )
+
+                Text(
+                    news.title,
+                    style = MaterialTheme.typography.h1,
+                    color = MaterialTheme.colors.primaryText,
+                    modifier = Modifier
+                        .padding(bottom = 24.dp)
+                        .padding(horizontal = 16.dp),
+                )
+
+
+                Text(
+                    news.content,
+                    style = MaterialTheme.typography.body1,
+                    color = MaterialTheme.colors.primaryText,
+                    modifier = Modifier
+                        .padding(bottom = 40.dp)
+                        .padding(horizontal = 16.dp),
+                )
+
+                NowPlayingPadding()
             }
-
-            Text(
-                "2021.11.19",
-                //news.date,
-                color = MaterialTheme.colors.secondaryText,
-                style = MaterialTheme.typography.caption,
-                modifier = Modifier
-                    .padding(bottom = 8.dp)
-                    .padding(horizontal = 16.dp),
-            )
-
-            Text(
-                news.title,
-                style = MaterialTheme.typography.h1,
-                color = MaterialTheme.colors.primaryText,
-                modifier = Modifier
-                    .padding(bottom = 24.dp)
-                    .padding(horizontal = 16.dp),
-            )
-
-
-            Text(
-                news.content,
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.primaryText,
-                modifier = Modifier
-                    .padding(bottom = 40.dp)
-                    .padding(horizontal = 16.dp),
-            )
-
-            NowPlayingPadding()
         }
+
     }
 }
 

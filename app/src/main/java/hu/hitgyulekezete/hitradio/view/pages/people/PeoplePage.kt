@@ -19,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import hu.hitgyulekezete.hitradio.model.program.Person
+import hu.hitgyulekezete.hitradio.view.components.layout.PageLayout
 import hu.hitgyulekezete.hitradio.view.nowplaying.nowPlayingPadding
 
 @ExperimentalFoundationApi
@@ -26,7 +27,8 @@ import hu.hitgyulekezete.hitradio.view.nowplaying.nowPlayingPadding
 fun PeoplePage(
     search: String? = null,
     viewModel: PeoplePageViewModel = hiltViewModel(),
-    onPersonClick: (Person) -> Unit = {}
+    onPersonClick: (Person) -> Unit = {},
+    onBackClick: () -> Unit = {},
 ) {
     LaunchedEffect(search) {
         viewModel.search.value = search
@@ -40,31 +42,34 @@ fun PeoplePage(
 
     var selectedTabIndex by rememberSaveable { mutableStateOf(0) }
 
-    Column {
-        Text("Személyek")
-
-        TabRow(selectedTabIndex = selectedTabIndex) {
-            Tab(
-                selected = selectedTabIndex == 0,
-                text = { Text("Vendégek") },
-                onClick = {
-                    selectedTabIndex = 0
-                }
-            )
-            Tab(
-                selected = selectedTabIndex == 1,
-                text = { Text("Műsorvezetők") },
-                onClick = {
-                    selectedTabIndex = 1
-                }
-            )
+    PageLayout(
+        headerTitle = "Személyek",
+        onBackClick = onBackClick,
+    ) {
+        item {
+            TabRow(selectedTabIndex = selectedTabIndex) {
+                Tab(
+                    selected = selectedTabIndex == 0,
+                    text = { Text("Vendégek") },
+                    onClick = {
+                        selectedTabIndex = 0
+                    }
+                )
+                Tab(
+                    selected = selectedTabIndex == 1,
+                    text = { Text("Műsorvezetők") },
+                    onClick = {
+                        selectedTabIndex = 1
+                    }
+                )
+            }
         }
 
-        Crossfade(targetState = selectedTabIndex) { index ->
-            when (index) {
-                0 -> {
-                    LazyColumn(state = guestsScrollState) {
-                        items(guests) { guest ->
+        item {
+            Crossfade(targetState = selectedTabIndex) { index ->
+                when (index) {
+                    0 -> {
+                        this@PageLayout.items(guests) { guest ->
                             guest ?: return@items
 
                             Text(
@@ -76,13 +81,25 @@ fun PeoplePage(
                                     }
                             )
                         }
-
-                        nowPlayingPadding()
+//                        LazyColumn(state = guestsScrollState) {
+//                            items(guests) { guest ->
+//                                guest ?: return@items
+//
+//                                Text(
+//                                    guest.name,
+//                                    modifier = Modifier
+//                                        .padding(8.dp)
+//                                        .clickable {
+//                                            onPersonClick(guest)
+//                                        }
+//                                )
+//                            }
+//
+//                            nowPlayingPadding()
+//                        }
                     }
-                }
-                1 -> {
-                    LazyColumn(state = hostsScrollState) {
-                        items(hosts) { host ->
+                    1 -> {
+                        this@PageLayout.items(hosts) { host ->
                             host ?: return@items
 
                             Text(
@@ -94,12 +111,28 @@ fun PeoplePage(
                                     }
                             )
                         }
-
-                        nowPlayingPadding()
+//                        LazyColumn(state = hostsScrollState) {
+//                            items(hosts) { host ->
+//                                host ?: return@items
+//
+//                                Text(
+//                                    host.name,
+//                                    modifier = Modifier
+//                                        .padding(8.dp)
+//                                        .clickable {
+//                                            onPersonClick(host)
+//                                        }
+//                                )
+//                            }
+//
+//                            nowPlayingPadding()
+//                        }
                     }
                 }
             }
         }
+
+        nowPlayingPadding()
     }
 
 }
