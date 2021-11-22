@@ -27,6 +27,7 @@ import hu.hitgyulekezete.hitradio.model.common.date.toReadableString
 import hu.hitgyulekezete.hitradio.model.program.Episode
 import hu.hitgyulekezete.hitradio.model.program.asSource
 import hu.hitgyulekezete.hitradio.view.components.episode.episodecard.SmallEpisodeCard
+import hu.hitgyulekezete.hitradio.view.components.layout.PageLayout
 import hu.hitgyulekezete.hitradio.view.components.list.GroupHeader
 import hu.hitgyulekezete.hitradio.view.components.list.groupedByItems
 import hu.hitgyulekezete.hitradio.view.layout.primaryText
@@ -39,7 +40,8 @@ fun EpisodesPage(
     audioController: AudioController,
     initialSearch: String = "",
     programId: String? = null,
-    onEpisodeClick: (Episode) -> Unit = {}
+    onEpisodeClick: (Episode) -> Unit = {},
+    onBackClick: () -> Unit = {},
 ) {
     val search by viewModel.search.collectAsState(initial = "")
     val episodes = viewModel.episodes.collectAsLazyPagingItems()
@@ -54,7 +56,10 @@ fun EpisodesPage(
     val mediaId = audioController.mediaId.collectAsState()
     val playbackState = audioController.playbackState.collectAsState()
 
-    LazyColumn {
+    PageLayout(
+        headerTitle = "Legfrissebb Adások",
+        onBackClick = onBackClick,
+    ) {
         item("header") {
             hu.hitgyulekezete.hitradio.view.components.textfield.TextField(
                 value = search,
@@ -98,30 +103,6 @@ fun EpisodesPage(
                         .padding(bottom = 16.dp)
                 )
             }
-
-//            items(episodes) { episode ->
-//                if (episode == null) {
-//                    return@items
-//                }
-//
-//                val playbackState by audioController.sourcePlaybackState(episode.id).collectAsState(
-//                    initial = AudioStateManager.PlaybackState.STOPPED,
-//                )
-//
-//                SmallEpisodeCard(
-//                    episode = episode,
-//                    playbackState = playbackState,
-//                    onClick = {
-//                        onEpisodeClick(episode)
-//                    },
-//                    onPlayClick = {
-//                        audioController.playPauseForSource(episode.asSource())
-//                    },
-//                    modifier = Modifier
-//                        .padding(horizontal = 16.dp)
-//                        .padding(bottom = 24.dp)
-//                )
-//            }
         }
 
         if (episodes.loadState.append is LoadState.Loading) {

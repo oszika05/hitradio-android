@@ -229,6 +229,9 @@ fun InnerLayout(
                     programId = programId,
                     onEpisodeClick = { episode ->
                         navController.navigate("episode/${episode?.id}")
+                    },
+                    onBackClick = {
+                        navController.navigateUp()
                     }
                 )
             }

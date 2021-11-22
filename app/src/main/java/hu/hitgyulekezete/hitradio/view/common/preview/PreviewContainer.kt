@@ -11,13 +11,19 @@ import androidx.compose.ui.unit.dp
 import hu.hitgyulekezete.hitradio.view.layout.HitradioTheme
 
 @Composable
-fun PreviewContainer(body: @Composable () -> Unit) {
+fun PreviewContainer(
+    disablePadding: Boolean = false,
+    body: @Composable () -> Unit
+) {
     HitradioTheme {
         Box(
             Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colors.background)
-                .padding(vertical = 16.dp, horizontal = 16.dp),
+                .padding(
+                    vertical = if (disablePadding) 0.dp else 16.dp,
+                    horizontal = if (disablePadding) 0.dp else 16.dp
+                ),
         ) {
             body()
         }

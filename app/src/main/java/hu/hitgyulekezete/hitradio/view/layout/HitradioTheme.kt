@@ -84,7 +84,7 @@ private val typography = Typography(
         fontWeight = FontWeight.Bold,
     ),
     h3 = TextStyle(
-        fontSize = 20.sp,
+        fontSize = 23.sp,
         fontWeight = FontWeight.Medium,
     ),
     h4 = TextStyle(
