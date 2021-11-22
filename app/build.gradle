@@ -114,4 +114,7 @@ dependencies {
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-alpha03'
 
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
+
+    // flow layouts
+    implementation "com.google.accompanist:accompanist-flowlayout:0.20.0"
 }

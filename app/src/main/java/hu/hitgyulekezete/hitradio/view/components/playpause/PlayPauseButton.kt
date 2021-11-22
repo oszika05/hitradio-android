@@ -1,5 +1,6 @@
 package hu.hitgyulekezete.hitradio.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -27,6 +28,7 @@ import hu.hitgyulekezete.hitradio.view.layout.white
 fun PlayPauseButton(
     playbackState: AudioStateManager.PlaybackState,
     circleAroundButton: Boolean = false,
+    circleBackground: Boolean = false,
     isLight: Boolean = false,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
@@ -48,6 +50,15 @@ fun PlayPauseButton(
         Box(
             contentAlignment = Alignment.Center
         ) {
+            if (circleBackground) {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colors.primary)
+                )
+            }
+
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier

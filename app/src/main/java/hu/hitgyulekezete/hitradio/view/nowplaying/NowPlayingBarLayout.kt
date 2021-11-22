@@ -1,6 +1,7 @@
 package hu.hitgyulekezete.hitradio.view.nowplaying
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
@@ -10,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
@@ -23,7 +25,8 @@ import kotlin.math.roundToInt
 val barHeight = 64.dp
 
 @Composable
-fun Modifier.nowPlayingPadding() = this.padding(bottom = barHeight)
+fun Modifier.nowPlayingPadding() = this.padding(top = barHeight)
+//fun Modifier.nowPlayingPadding() = this.height(barHeight).fillMaxWidth().background(Color.Red)
 
 @Composable
 fun NowPlayingPadding() = Spacer(modifier = Modifier.nowPlayingPadding())
