@@ -7,7 +7,27 @@ import coil.compose.rememberImagePainter
 import hu.hitgyulekezete.hitradio.model.news.News
 import hu.hitgyulekezete.hitradio.view.common.preview.PreviewContainer
 import hu.hitgyulekezete.hitradio.view.components.card.Card
+import hu.hitgyulekezete.hitradio.view.components.skeleton.skeleton
 import java.util.*
+
+@Composable
+fun NewsCardSkeleton(
+    modifier: Modifier = Modifier,
+) {
+    NewsCard(
+        item = News(
+            id = "",
+            title = "",
+            picture = "",
+            date = Date(),
+            tags = listOf(),
+            content = "",
+        ),
+        modifier = modifier
+            .skeleton()
+    )
+
+}
 
 @Composable
 fun NewsCard(

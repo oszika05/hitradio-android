@@ -10,6 +10,7 @@ import hu.hitgyulekezete.hitradio.model.program.paging.EpisodePagingSource
 import hu.hitgyulekezete.hitradio.model.program.repository.ProgramRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapLatest
 import javax.inject.Inject

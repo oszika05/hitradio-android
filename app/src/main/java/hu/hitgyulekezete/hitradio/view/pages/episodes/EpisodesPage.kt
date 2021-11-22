@@ -27,8 +27,10 @@ import hu.hitgyulekezete.hitradio.model.common.date.toReadableString
 import hu.hitgyulekezete.hitradio.model.program.Episode
 import hu.hitgyulekezete.hitradio.model.program.asSource
 import hu.hitgyulekezete.hitradio.view.components.episode.episodecard.SmallEpisodeCard
+import hu.hitgyulekezete.hitradio.view.components.episode.episodecard.SmallEpisodeCardSkeleton
 import hu.hitgyulekezete.hitradio.view.components.layout.PageLayout
 import hu.hitgyulekezete.hitradio.view.components.list.GroupHeader
+import hu.hitgyulekezete.hitradio.view.components.list.GroupHeaderSkeleton
 import hu.hitgyulekezete.hitradio.view.components.list.groupedByItems
 import hu.hitgyulekezete.hitradio.view.layout.primaryText
 import hu.hitgyulekezete.hitradio.view.nowplaying.nowPlayingPadding
@@ -71,38 +73,34 @@ fun EpisodesPage(
             )
         }
 
-        if (episodes.loadState.refresh is LoadState.Loading) {
-            item(key = "refresh_loading") {
-                CircularProgressIndicator()
-            }
-        } else {
-            groupedByItems(
-                items = episodes,
-                key = { it.id },
-                groupBy = { it.date.daysSince().toReadableString() },
-                groupKey = { it },
-                header = { group ->
-                    GroupHeader(group)
-                }
-            ) { episode ->
-                val playbackState by audioController.sourcePlaybackState(episode.id).collectAsState(
-                    initial = AudioStateManager.PlaybackState.STOPPED,
-                )
+        groupedByItems(
+            items = episodes,
+            key = { it.id },
+            groupBy = { it.date.daysSince().toReadableString() },
+            groupKey = { it },
+            header = { group ->
+                GroupHeader(group)
+            },
+            skeleton = { SmallEpisodeCardSkeleton() },
+            headerSkeleton = { GroupHeaderSkeleton() }
+        ) { episode ->
+            val playbackState by audioController.sourcePlaybackState(episode.id).collectAsState(
+                initial = AudioStateManager.PlaybackState.STOPPED,
+            )
 
-                SmallEpisodeCard(
-                    episode = episode,
-                    playbackState = playbackState,
-                    onClick = {
-                        onEpisodeClick(episode)
-                    },
-                    onPlayClick = {
-                        audioController.playPauseForSource(episode.asSource())
-                    },
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 16.dp)
-                )
-            }
+            SmallEpisodeCard(
+                episode = episode,
+                playbackState = playbackState,
+                onClick = {
+                    onEpisodeClick(episode)
+                },
+                onPlayClick = {
+                    audioController.playPauseForSource(episode.asSource())
+                },
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 16.dp)
+            )
         }
 
         if (episodes.loadState.append is LoadState.Loading) {

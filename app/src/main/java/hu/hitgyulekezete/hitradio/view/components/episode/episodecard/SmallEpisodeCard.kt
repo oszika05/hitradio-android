@@ -13,7 +13,34 @@ import hu.hitgyulekezete.hitradio.model.program.Program
 import hu.hitgyulekezete.hitradio.view.common.preview.PreviewContainer
 import hu.hitgyulekezete.hitradio.view.components.card.Card
 import hu.hitgyulekezete.hitradio.view.components.card.SmallCard
+import hu.hitgyulekezete.hitradio.view.components.skeleton.skeleton
 import java.util.*
+
+@Composable
+fun SmallEpisodeCardSkeleton(
+    modifier: Modifier = Modifier,
+) {
+    SmallEpisodeCard(
+        episode = Episode(
+            id = "",
+            title = "",
+            date = Date(),
+            description = null,
+            tags = listOf(),
+            program = Program(
+                id = "",
+                name = "",
+                description = null,
+                picture = null,
+            ),
+            audioUrl = "",
+            hosts = listOf(),
+            guests = listOf(),
+        ),
+        playbackState = AudioStateManager.PlaybackState.STOPPED,
+        modifier = modifier.skeleton()
+    )
+}
 
 @Composable
 fun SmallEpisodeCard(

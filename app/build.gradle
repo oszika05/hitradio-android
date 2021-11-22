@@ -117,4 +117,7 @@ dependencies {
 
     // flow layouts
     implementation "com.google.accompanist:accompanist-flowlayout:0.20.0"
+
+    // skeleton
+    implementation "com.google.accompanist:accompanist-placeholder:0.20.0"
 }

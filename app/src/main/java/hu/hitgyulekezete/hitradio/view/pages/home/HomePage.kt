@@ -28,16 +28,21 @@ import hu.hitgyulekezete.hitradio.audio.controller.sourcePlaybackState
 import hu.hitgyulekezete.hitradio.model.news.News
 import hu.hitgyulekezete.hitradio.model.program.Episode
 import hu.hitgyulekezete.hitradio.model.program.Person
+import hu.hitgyulekezete.hitradio.model.program.Program
 import hu.hitgyulekezete.hitradio.model.program.asSource
 import hu.hitgyulekezete.hitradio.view.common.modifiers.coloredshadow.coloredShadow
 import hu.hitgyulekezete.hitradio.view.components.button.Button
 import hu.hitgyulekezete.hitradio.view.components.button.ButtonVariant
 import hu.hitgyulekezete.hitradio.view.components.episode.episodecard.EpisodeCard
+import hu.hitgyulekezete.hitradio.view.components.episode.episodecard.EpisodeCardSkeleton
 import hu.hitgyulekezete.hitradio.view.components.news.newscard.NewsCard
+import hu.hitgyulekezete.hitradio.view.components.news.newscard.NewsCardSkeleton
 import hu.hitgyulekezete.hitradio.view.components.person.personcard.PersonCard
+import hu.hitgyulekezete.hitradio.view.components.skeleton.skeleton
 import hu.hitgyulekezete.hitradio.view.layout.primaryText
 import hu.hitgyulekezete.hitradio.view.nowplaying.NowPlayingPadding
 import hu.hitgyulekezete.hitradio.view.nowplaying.nowPlayingPadding
+import java.util.*
 
 @Composable
 fun HomePage(
@@ -127,6 +132,16 @@ fun HomePage(
             }
         }
 
+        if (loading.contains(HomePageViewModel.Loading.Episodes)) {
+            items(2) {
+                EpisodeCardSkeleton(
+                    Modifier
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 16.dp)
+                )
+            }
+        }
+
         items(episodes) { episode ->
             val playbackState by audioController.sourcePlaybackState(episode.id)
                 .collectAsState(AudioStateManager.PlaybackState.STOPPED)
@@ -165,6 +180,16 @@ fun HomePage(
                     "Összes",
                     variant = ButtonVariant.Ternary,
                     onClick = onNavigateToNewsPage,
+                )
+            }
+        }
+
+        if (loading.contains(HomePageViewModel.Loading.News)) {
+            items(2) {
+                NewsCardSkeleton(
+                    Modifier
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 16.dp)
                 )
             }
         }
