@@ -94,25 +94,6 @@ fun NowPlayingBarLayout(
                         orientation = Orientation.Vertical
                     )
             ) {
-                Column(
-                    Modifier
-                        .height(barHeight)
-                        .fillMaxWidth()
-                        .alpha(getSwipeState())
-                        .clickable {
-                            coroutineScope.launch {
-                                swipeableState.animateTo(1)
-                            }
-                        }
-                ) {
-                    NowPlayingBarCollapsed(
-                        height = barHeight,
-                        playbackState = playbackState,
-                        onPlayPausePressed = onPlayPausePressed,
-                        metadata = metadata
-                    )
-                }
-
                 Card(
                     Modifier
                         .fillMaxWidth()
@@ -132,6 +113,27 @@ fun NowPlayingBarLayout(
                             }
                         }
                     )
+                }
+
+                if (getSwipeState() > 0.0001f) {
+                    Column(
+                        Modifier
+                            .height(barHeight)
+                            .fillMaxWidth()
+                            .alpha(getSwipeState())
+                    ) {
+                        NowPlayingBarCollapsed(
+                            height = barHeight,
+                            playbackState = playbackState,
+                            onPlayPausePressed = onPlayPausePressed,
+                            metadata = metadata,
+                            onClick = {
+                                coroutineScope.launch {
+                                    swipeableState.animateTo(1)
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }

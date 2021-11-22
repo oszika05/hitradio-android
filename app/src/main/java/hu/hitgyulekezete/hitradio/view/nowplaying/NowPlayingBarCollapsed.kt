@@ -2,6 +2,7 @@ package hu.hitgyulekezete.hitradio.view.nowplaying
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -31,7 +32,8 @@ fun NowPlayingBarCollapsed(
     height: Dp,
     metadata: Metadata,
     playbackState: AudioStateManager.PlaybackState,
-    onPlayPausePressed: () -> Unit
+    onPlayPausePressed: () -> Unit,
+    onClick: () -> Unit = {},
 ) {
     Row(
         Modifier
@@ -43,36 +45,41 @@ fun NowPlayingBarCollapsed(
             .clip(RoundedCornerShape(8.dp))
             .background(MaterialTheme.colors.surface)
     ) {
-        Image(
-            painter = rememberImagePainter(metadata.artUriOrDefault()),
-            contentScale = ContentScale.Crop,
-            contentDescription = "album image",
-            modifier = Modifier
-                .aspectRatio(1f)
-                .padding(end = 4.dp)
-                .clip(
-                    RoundedCornerShape(8.dp)
-                )
-
-
-        )
-
-        Column(
+        Row(
             Modifier
                 .weight(1f)
-                .fillMaxHeight()
-                .padding(4.dp),
-            verticalArrangement = Arrangement.Center,
+                .clickable { onClick() }
         ) {
-            Text(
-                metadata.title,
-                Modifier
-                    .padding(top = 3.dp)
-                    .fillMaxWidth(),
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.h4
+            Image(
+                painter = rememberImagePainter(metadata.artUriOrDefault()),
+                contentScale = ContentScale.Crop,
+                contentDescription = "album image",
+                modifier = Modifier
+                    .aspectRatio(1f)
+                    .padding(end = 4.dp)
+                    .clip(
+                        RoundedCornerShape(8.dp)
+                    )
+
+
             )
+
+            Column(
+                Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .padding(4.dp),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Text(
+                    metadata.title,
+                    Modifier
+                        .padding(top = 3.dp)
+                        .fillMaxWidth(),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.h4
+                )
 //            if (metadata.subtitle != null) {
 //                Text(
 //                    metadata.subtitle,
@@ -80,8 +87,9 @@ fun NowPlayingBarCollapsed(
 //                    style = MaterialTheme.typography.subtitle1
 //                )
 //            }
-        }
+            }
 
+        }
 
         Row(
             Modifier
