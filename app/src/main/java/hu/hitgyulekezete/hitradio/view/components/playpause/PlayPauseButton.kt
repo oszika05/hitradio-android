@@ -9,6 +9,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
@@ -66,7 +67,13 @@ fun PlayPauseButton(
                     .fillMaxHeight()
                     .aspectRatio(1f)
             ) {
-                if (playbackState == AudioStateManager.PlaybackState.BUFFERING) {
+                if (playbackState == AudioStateManager.PlaybackState.LOCKED) {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        "Lezárva",
+                        tint = color,
+                    )
+                } else if (playbackState == AudioStateManager.PlaybackState.BUFFERING) {
                     CircularProgressIndicator(
                         color = color
                     )

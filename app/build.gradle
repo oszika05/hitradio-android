@@ -5,6 +5,7 @@ plugins {
 
 apply plugin: 'kotlin-kapt'
 apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'com.google.gms.google-services'
 
 ext {
     ktor_version = "1.5.3"
@@ -120,4 +121,8 @@ dependencies {
 
     // skeleton
     implementation "com.google.accompanist:accompanist-placeholder:0.20.0"
+
+    implementation platform('com.google.firebase:firebase-bom:29.0.1')
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
 }

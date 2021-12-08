@@ -50,7 +50,8 @@ class AudioStateManager(
         PLAYING,
         PAUSED,
         BUFFERING,
-        STOPPED;
+        STOPPED,
+        LOCKED;
 
         fun toggle(): PlaybackState {
             return if (this == PLAYING || this == BUFFERING) {

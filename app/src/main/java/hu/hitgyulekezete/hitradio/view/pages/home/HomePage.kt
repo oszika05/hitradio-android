@@ -31,10 +31,13 @@ import hu.hitgyulekezete.hitradio.model.program.Person
 import hu.hitgyulekezete.hitradio.model.program.Program
 import hu.hitgyulekezete.hitradio.model.program.asSource
 import hu.hitgyulekezete.hitradio.view.common.modifiers.coloredshadow.coloredShadow
+import hu.hitgyulekezete.hitradio.view.components.LoginButton
+import hu.hitgyulekezete.hitradio.view.components.LogoutButton
 import hu.hitgyulekezete.hitradio.view.components.button.Button
 import hu.hitgyulekezete.hitradio.view.components.button.ButtonVariant
 import hu.hitgyulekezete.hitradio.view.components.episode.episodecard.EpisodeCard
 import hu.hitgyulekezete.hitradio.view.components.episode.episodecard.EpisodeCardSkeleton
+import hu.hitgyulekezete.hitradio.view.components.login.LocalUser
 import hu.hitgyulekezete.hitradio.view.components.news.newscard.NewsCard
 import hu.hitgyulekezete.hitradio.view.components.news.newscard.NewsCardSkeleton
 import hu.hitgyulekezete.hitradio.view.components.person.personcard.PersonCard
@@ -56,6 +59,7 @@ fun HomePage(
     onNavigateToNewsItem: (item: News) -> Unit = {},
     onNavigateToPeoplePage: () -> Unit = {},
     onNavigateToPerson: (person: Person) -> Unit = {},
+    onLogin: () -> Unit = {},
 ) {
     val episodes by viewModel.episodes.collectAsState(initial = listOf())
     val news by viewModel.news.collectAsState(initial = listOf())
@@ -86,25 +90,31 @@ fun HomePage(
                     horizontalArrangement = Arrangement.spacedBy(32.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    IconButton(
-                        modifier = Modifier.size(28.dp),
-                        onClick = onNavigateToDownloads
-                    ) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_hr_download),
-                            contentDescription = "Letöltések"
-                        )
+                    if (LocalUser.current != null) {
+                        LogoutButton(onSuccess = onLogin)
+                    } else {
+                        LoginButton(onSuccess = onLogin)
                     }
 
-                    IconButton(
-                        modifier = Modifier.size(28.dp),
-                        onClick = onNavigateToSettingsPage
-                    ) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_hr_settings),
-                            contentDescription = "Beállítások"
-                        )
-                    }
+//                    IconButton(
+//                        modifier = Modifier.size(28.dp),
+//                        onClick = onNavigateToDownloads
+//                    ) {
+//                        Icon(
+//                            painterResource(id = R.drawable.ic_hr_download),
+//                            contentDescription = "Letöltések"
+//                        )
+//                    }
+//
+//                    IconButton(
+//                        modifier = Modifier.size(28.dp),
+//                        onClick = onNavigateToSettingsPage
+//                    ) {
+//                        Icon(
+//                            painterResource(id = R.drawable.ic_hr_settings),
+//                            contentDescription = "Beállítások"
+//                        )
+//                    }
                 }
             }
         }
@@ -143,7 +153,7 @@ fun HomePage(
         }
 
         items(episodes) { episode ->
-            val playbackState by audioController.sourcePlaybackState(episode.id)
+            val playbackState by audioController.sourcePlaybackState(episode.asSource())
                 .collectAsState(AudioStateManager.PlaybackState.STOPPED)
 
             EpisodeCard(

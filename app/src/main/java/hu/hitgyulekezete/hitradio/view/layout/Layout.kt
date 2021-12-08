@@ -15,9 +15,11 @@ import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
 import hu.hitgyulekezete.hitradio.R
 import hu.hitgyulekezete.hitradio.audio.VolumeObserver
 import hu.hitgyulekezete.hitradio.audio.controller.AudioController
+import hu.hitgyulekezete.hitradio.view.components.login.LocalUser
 import hu.hitgyulekezete.hitradio.view.layout.HitradioTheme
 import hu.hitgyulekezete.hitradio.view.layout.secondaryText
 import hu.hitgyulekezete.hitradio.view.layout.navBarColor
@@ -112,40 +114,45 @@ fun InnerLayout(
     volumeObserver: VolumeObserver,
     nowPlayingBarSwipeableState: SwipeableState<Int>
 ) {
-    NowPlayingBar(
-        audioController = audioController,
-        audioManager = audioManager,
-        volumeObserver = volumeObserver,
-        swipeableState = nowPlayingBarSwipeableState,
-    ) {
-        NavHost(
-            navController = navController,
-            startDestination = startDestination,
-            Modifier.fillMaxSize()
+    var currentUser by remember { mutableStateOf(FirebaseAuth.getInstance().currentUser) }
+    CompositionLocalProvider(LocalUser provides currentUser) {
+
+
+        NowPlayingBar(
+            audioController = audioController,
+            audioManager = audioManager,
+            volumeObserver = volumeObserver,
+            swipeableState = nowPlayingBarSwipeableState,
         ) {
-            composable("home") { backStack ->
-                hu.hitgyulekezete.hitradio.view.pages.home.HomePage(
-                    audioController = audioController,
-                    viewModel = hiltViewModel(backStack),
-                    onNavigateToEpisodesPage = {
-                        navController.navigate("episodes")
-                    },
-                    onNavigateToEpisode = { episode ->
-                        navController.navigate("episode/${episode.id}")
-                    },
-                    onNavigateToNewsPage = {
-                        navController.navigate("news")
-                    },
-                    onNavigateToNewsItem = { news ->
-                        navController.navigate("newsitem/${news.id}")
-                    },
-                    onNavigateToPeoplePage = {
-                        navController.navigate("people")
-                    },
-                    onNavigateToPerson = { person ->
-                        navController.navigate("person/${person.id}")
-                    }
-                )
+            NavHost(
+                navController = navController,
+                startDestination = startDestination,
+                Modifier.fillMaxSize()
+            ) {
+                composable("home") { backStack ->
+                    hu.hitgyulekezete.hitradio.view.pages.home.HomePage(
+                        audioController = audioController,
+                        viewModel = hiltViewModel(backStack),
+                        onNavigateToEpisodesPage = {
+                            navController.navigate("episodes")
+                        },
+                        onNavigateToEpisode = { episode ->
+                            navController.navigate("episode/${episode.id}")
+                        },
+                        onNavigateToNewsPage = {
+                            navController.navigate("news")
+                        },
+                        onNavigateToNewsItem = { news ->
+                            navController.navigate("newsitem/${news.id}")
+                        },
+                        onNavigateToPeoplePage = {
+                            navController.navigate("people")
+                        },
+                        onNavigateToPerson = { person ->
+                            navController.navigate("person/${person.id}")
+                        },
+                        onLogin = { currentUser = FirebaseAuth.getInstance().currentUser }
+                    )
 //                Column {
 //                    Text("home")
 //                    Button(onClick = {
@@ -176,152 +183,153 @@ fun InnerLayout(
 //                    }
 //                }
 
-            }
-            composable("live") { backStack ->
-                LivePage(
-                    audioController = audioController,
-                    viewModel = hiltViewModel(backStack)
-                )
-            }
-            composable("discover") { backStack ->
-                DiscoverPage(
-                    viewModel = hiltViewModel(backStack),
-                    audioController = audioController,
-                    onAllProgramsClick = { search ->
-                        navController.navigate("programs?search=${search}")
-                    },
-                    onProgramClick = { program ->
-                        navController.navigate("program/${program.id}")
-                    },
-                    onAllPeopleClick = { search ->
-                        navController.navigate("people?search=${search}")
-                    },
-                    onPersonClick = { person ->
-                        navController.navigate("person/${person.id}")
-                    },
-                    onEpisodeClick = { episode ->
-                        navController.navigate("episode/${episode.id}")
-                    }
-                )
-            }
-            composable("news") { backStack ->
-                NewsPage(
-                    viewModel = hiltViewModel(backStack),
-                    onNewsItemClick = { news ->
-                        navController.navigate("newsitem/${news.id}")
-                    },
-                    onBackClick = {
-                        navController.navigateUp()
-                    }
-                )
-            }
-            composable("newsitem/{item}") { backStackEntry ->
-                val id = backStackEntry.arguments?.getString("item") ?: return@composable
+                }
+                composable("live") { backStack ->
+                    LivePage(
+                        audioController = audioController,
+                        viewModel = hiltViewModel(backStack)
+                    )
+                }
+                composable("discover") { backStack ->
+                    DiscoverPage(
+                        viewModel = hiltViewModel(backStack),
+                        audioController = audioController,
+                        onAllProgramsClick = { search ->
+                            navController.navigate("programs?search=${search}")
+                        },
+                        onProgramClick = { program ->
+                            navController.navigate("program/${program.id}")
+                        },
+                        onAllPeopleClick = { search ->
+                            navController.navigate("people?search=${search}")
+                        },
+                        onPersonClick = { person ->
+                            navController.navigate("person/${person.id}")
+                        },
+                        onEpisodeClick = { episode ->
+                            navController.navigate("episode/${episode.id}")
+                        }
+                    )
+                }
+                composable("news") { backStack ->
+                    NewsPage(
+                        viewModel = hiltViewModel(backStack),
+                        onNewsItemClick = { news ->
+                            navController.navigate("newsitem/${news.id}")
+                        },
+                        onBackClick = {
+                            navController.navigateUp()
+                        }
+                    )
+                }
+                composable("newsitem/{item}") { backStackEntry ->
+                    val id = backStackEntry.arguments?.getString("item") ?: return@composable
 
-                NewsItemPage(
-                    newsId = id,
-                    onBackClick = {
-                        navController.navigateUp()
-                    }
-                )
-            }
-            composable("episodes") { backStack ->
+                    NewsItemPage(
+                        newsId = id,
+                        onBackClick = {
+                            navController.navigateUp()
+                        }
+                    )
+                }
+                composable("episodes") { backStack ->
 
-                val programId = backStack.arguments?.get("programId") as String?
-                val initialSearch = backStack.arguments?.get("search") as String?
+                    val programId = backStack.arguments?.get("programId") as String?
+                    val initialSearch = backStack.arguments?.get("search") as String?
 
-                EpisodesPage(
-                    viewModel = hiltViewModel(backStack),
-                    audioController = audioController,
-                    initialSearch = initialSearch ?: "",
-                    programId = programId,
-                    onEpisodeClick = { episode ->
-                        navController.navigate("episode/${episode?.id}")
-                    },
-                    onBackClick = {
-                        navController.navigateUp()
-                    }
-                )
-            }
-            composable("episode/{id}") { backStack ->
+                    EpisodesPage(
+                        viewModel = hiltViewModel(backStack),
+                        audioController = audioController,
+                        initialSearch = initialSearch ?: "",
+                        programId = programId,
+                        onEpisodeClick = { episode ->
+                            navController.navigate("episode/${episode?.id}")
+                        },
+                        onBackClick = {
+                            navController.navigateUp()
+                        }
+                    )
+                }
+                composable("episode/{id}") { backStack ->
 
-                val episodeId = backStack.arguments?.get("id") as String? ?: return@composable
+                    val episodeId = backStack.arguments?.get("id") as String? ?: return@composable
 
-                EpisodePage(
-                    episodeId = episodeId,
-                    audioController = audioController,
-                    viewModel = hiltViewModel(backStack),
-                    onEpisodeClick = { episode ->
-                        navController.navigate("episode/${episode.id}")
-                    },
-                    onPersonClick = {
+                    EpisodePage(
+                        episodeId = episodeId,
+                        audioController = audioController,
+                        viewModel = hiltViewModel(backStack),
+                        onEpisodeClick = { episode ->
+                            navController.navigate("episode/${episode.id}")
+                        },
+                        onPersonClick = {
 
-                    },
-                    onTagClick = {
+                        },
+                        onTagClick = {
 
-                    },
-                    onBackClick = {
-                        navController.navigateUp()
-                    }
-                )
-            }
-            composable("program/{id}") { backStack ->
+                        },
+                        onBackClick = {
+                            navController.navigateUp()
+                        }
+                    )
+                }
+                composable("program/{id}") { backStack ->
 
-                val programId = backStack.arguments?.get("id") as String? ?: return@composable
+                    val programId = backStack.arguments?.get("id") as String? ?: return@composable
 
-                ProgramPage(
-                    programId = programId,
-                    audioController = audioController,
-                    onEpisodeClick = { episode ->
-                        navController.navigate("episode/${episode.id}")
-                    },
-                    onBackClick = {
-                        navController.navigateUp()
-                    }
-                )
-            }
-            composable("people?search={search}") { backStack ->
-                val search = backStack.arguments?.get("search") as String?
+                    ProgramPage(
+                        programId = programId,
+                        audioController = audioController,
+                        onEpisodeClick = { episode ->
+                            navController.navigate("episode/${episode.id}")
+                        },
+                        onBackClick = {
+                            navController.navigateUp()
+                        }
+                    )
+                }
+                composable("people?search={search}") { backStack ->
+                    val search = backStack.arguments?.get("search") as String?
 
-                PeoplePage(
-                    search = search,
-                    viewModel = hiltViewModel(backStack),
-                    onPersonClick = { person ->
-                        navController.navigate("person/${person.id}")
-                    },
-                    onBackClick = {
-                        navController.navigateUp()
-                    }
-                )
-            }
-            composable("person/{id}") { backStack ->
-                val personId = backStack.arguments?.get("id") as String? ?: return@composable
+                    PeoplePage(
+                        search = search,
+                        viewModel = hiltViewModel(backStack),
+                        onPersonClick = { person ->
+                            navController.navigate("person/${person.id}")
+                        },
+                        onBackClick = {
+                            navController.navigateUp()
+                        }
+                    )
+                }
+                composable("person/{id}") { backStack ->
+                    val personId = backStack.arguments?.get("id") as String? ?: return@composable
 
-                PersonPage(
-                    personId = personId,
-                    viewModel = hiltViewModel(backStack),
-                    onEpisodeClick = { episode ->
-                        navController.navigate("episode/${episode.id}")
-                    },
-                    onBackClick = {
-                        navController.navigateUp()
-                    }
-                )
+                    PersonPage(
+                        personId = personId,
+                        viewModel = hiltViewModel(backStack),
+                        onEpisodeClick = { episode ->
+                            navController.navigate("episode/${episode.id}")
+                        },
+                        onBackClick = {
+                            navController.navigateUp()
+                        }
+                    )
 
-            }
-            composable("programs?search={search}") { backStack ->
-                val search = backStack.arguments?.get("search") as String?
+                }
+                composable("programs?search={search}") { backStack ->
+                    val search = backStack.arguments?.get("search") as String?
 
-                ProgramsPage(
-                    search = search,
-                    viewModel = hiltViewModel(backStack),
-                    onProgramClick = { program ->
-                        navController.navigate("program/${program.id}")
-                    },
-                    onBackClick = {
-                        navController.navigateUp()
-                    }
-                )
+                    ProgramsPage(
+                        search = search,
+                        viewModel = hiltViewModel(backStack),
+                        onProgramClick = { program ->
+                            navController.navigate("program/${program.id}")
+                        },
+                        onBackClick = {
+                            navController.navigateUp()
+                        }
+                    )
+                }
             }
         }
     }

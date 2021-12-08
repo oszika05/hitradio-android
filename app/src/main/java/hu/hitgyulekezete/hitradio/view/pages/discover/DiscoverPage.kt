@@ -185,7 +185,7 @@ fun DiscoverPage(
         items(episodes) { episode ->
             episode ?: return@items
 
-            val playbackStateFlow = audioController.sourcePlaybackState(episode.asSource().id)
+            val playbackStateFlow = audioController.sourcePlaybackState(episode.asSource())
             val playbackState by playbackStateFlow.collectAsState(AudioStateManager.PlaybackState.STOPPED)
 
             SmallEpisodeCard(

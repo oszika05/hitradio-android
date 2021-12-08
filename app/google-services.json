@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "17577550420",
+    "project_id": "hitradio-test",
+    "storage_bucket": "hitradio-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:17577550420:android:1abf1856e2133429b7c3c1",
+        "android_client_info": {
+          "package_name": "hu.hitgyulekezete.hitradio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "17577550420-tgor2ur5nvd96a9igh8dhhebnen46jp3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "hu.hitgyulekezete.hitradio",
+            "certificate_hash": "534f7955fa6f8a6e5336a8e2ad50d0f0e03bfc30"
+          }
+        },
+        {
+          "client_id": "17577550420-p21j0n52viv56lvi5a4a9cs1932m5kvb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBg0aHC33pPkEpKHwCYyrVR8SBC3lUDLE4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "17577550420-p21j0n52viv56lvi5a4a9cs1932m5kvb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

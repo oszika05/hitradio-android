@@ -84,7 +84,7 @@ fun EpisodesPage(
             skeleton = { SmallEpisodeCardSkeleton() },
             headerSkeleton = { GroupHeaderSkeleton() }
         ) { episode ->
-            val playbackState by audioController.sourcePlaybackState(episode.id).collectAsState(
+            val playbackState by audioController.sourcePlaybackState(episode.asSource()).collectAsState(
                 initial = AudioStateManager.PlaybackState.STOPPED,
             )
 

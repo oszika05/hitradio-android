@@ -26,6 +26,9 @@ val Colors.shadow: Color
     @Composable get() = if (isLight) Color(0x20000000) else Color(0x00000000)
 //    @Composable get() = if (isLight) Color(0xff000000) else Color(0x00000000)
 
+val Colors.live: Color
+    @Composable get() = if (isLight) Color(0xffFF2C2C) else Color(0xffFF2C2C)
+
 val Colors.primaryText: Color
     @Composable get() = if (isLight) Color(0xff000000) else Color(0xff000000)
 

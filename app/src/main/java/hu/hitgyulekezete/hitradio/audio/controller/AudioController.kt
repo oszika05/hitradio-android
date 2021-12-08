@@ -171,10 +171,13 @@ class AudioController(
 //            mediaController.queue.removeAll { true }
 //        }
 
-        mediaController.transportControls.prepareFromUri(
-            source.url[quality].toUri(),
-            source.asBundle()
-        )
+        if (source.url[quality].isNotBlank()) {
+            mediaController.transportControls.prepareFromUri(
+                source.url[quality].toUri(),
+                source.asBundle()
+            )
+        }
+
 //        mediaController.transportControls.prepareFromMediaId(source.id, Bundle.EMPTY)
 //        mediaController.transportControls.playFromMediaId(source.id, Bundle.EMPTY)
 //        mediaController.addQueueItem(source.asMediaDescriptionCompat(quality), 0)
@@ -208,15 +211,31 @@ class AudioController(
     }
 }
 
-fun AudioController.sourcePlaybackState(sourceId: String?): Flow<AudioStateManager.PlaybackState> =
+fun AudioController.sourcePlaybackState(source: Source?): Flow<AudioStateManager.PlaybackState> =
     flow {
         playbackState
             .combine(mediaId) { playbackState, mediaId -> playbackState to mediaId }
             .collect { (playbackState, mediaId) ->
-                if (sourceId == null) {
+                if (source?.url?.get(StreamQuality.High)?.isBlank() == true) {
+                    emit(AudioStateManager.PlaybackState.LOCKED)
+                } else if (source?.id == null) {
                     emit(AudioStateManager.PlaybackState.STOPPED)
+                } else if (mediaId != source?.id) {
+                    emit(AudioStateManager.PlaybackState.STOPPED)
+                } else {
+                    emit(playbackState)
                 }
-                if (mediaId != sourceId) {
+            }
+    }
+
+fun AudioController.sourcePlaybackStateById(id: String?): Flow<AudioStateManager.PlaybackState> =
+    flow {
+        playbackState
+            .combine(mediaId) { playbackState, mediaId -> playbackState to mediaId }
+            .collect { (playbackState, mediaId) ->
+               if (id == null) {
+                    emit(AudioStateManager.PlaybackState.STOPPED)
+                } else if (mediaId != id) {
                     emit(AudioStateManager.PlaybackState.STOPPED)
                 } else {
                     emit(playbackState)

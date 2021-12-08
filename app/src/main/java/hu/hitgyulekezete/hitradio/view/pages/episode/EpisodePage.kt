@@ -69,7 +69,7 @@ fun EpisodePage(
                     )
 
                     val playbackStateFlow =
-                        remember(episode.id) { audioController.sourcePlaybackState(episode.id) }
+                        remember(episode.id) { audioController.sourcePlaybackState(episode.asSource()) }
                     val playbackState by playbackStateFlow.collectAsState(AudioStateManager.PlaybackState.STOPPED)
 
                     PlayPauseButton(
@@ -165,7 +165,7 @@ fun EpisodePage(
                     Spacer(Modifier)
 
                     relatedEpisodes.forEach { episode ->
-                        val playbackState by audioController.sourcePlaybackState(episode.id)
+                        val playbackState by audioController.sourcePlaybackState(episode.asSource())
                             .collectAsState(
                                 initial = AudioStateManager.PlaybackState.STOPPED
                             )

@@ -104,7 +104,7 @@ fun ProgramPage(
             }
         ) { episode ->
             val playbackStateFlow =
-                remember(episode.id) { audioController.sourcePlaybackState(episode.id) }
+                remember(episode.id) { audioController.sourcePlaybackState(episode.asSource()) }
             val playbackState by playbackStateFlow.collectAsState(initial = AudioStateManager.PlaybackState.STOPPED)
 
             SmallEpisodeCard(
